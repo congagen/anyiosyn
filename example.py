@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys
 from modules import composer
 from modules import miscutils
