@@ -1,5 +1,5 @@
-# anyiotone
-anydata to algojazz sideproject 
+# Anyiotone
+## Anydata to algojazz sideproject 
 
-Example usage:
+Example usage:  
 $ python example.py example.json
