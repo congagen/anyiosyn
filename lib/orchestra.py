@@ -13,9 +13,12 @@ cached_notes = {'NoteValue': array.array('h')}
 
 
 def dbg_write(bars, curr_b, note_pitch, note_duration, track_number):
-    print('Rendering Track: ' + str(track_number) + ' | Bar: ' + str(curr_b) +
-          ' | NoteValue: ' + str(note_pitch) + ' | NoteDuration: ' + str(note_duration))
+    tr = ' Rendering Track: ' + str(track_number + 1)
+    br = ' | Bar: ' + str(curr_b + 1 )
+    no = ' | NoteValue: ' + str(note_pitch)
+    dr = ' | NoteDuration: ' + str(note_duration)
 
+    print(tr + br + no + dr)
 
 def fm_osc(curs, op1_note, op2_note, fm_amount, frq_env, s_rate):
     op1_freq = (s_rate * (1 / (abs(op1_note) + 1)))

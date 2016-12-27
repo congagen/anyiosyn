@@ -3,27 +3,26 @@ import array
 import numpy
 import collections
 
-# ------------------------------------------------------------------------------
 
 def mix_song(song_dct):
     mixed_audio_data = array.array('h')
     num_dct_keys = len(song_dct.keys())
-    max_tfa = int(30000 / (num_dct_keys + 1)) # tfa: track_frame_amplitude
+    max_amplitude = int(30000 / (num_dct_keys + 1)) # tfa: track_frame_amplitude
 
     for k, v in song_dct.items():
         track = k
         frames = song_dct[k][0]
 
-        print('Writing Track: ' + str(track) + ' | NumFrames: ' + str(len(frames)))
+        print('Mixing Track: ' + str(track + 1) + ' | Frames: ' + str(len(frames)))
 
         for f in range(len(frames)):
-            val_a = int(frames[f] / num_dct_keys)
-            val_v = numpy.clip(val_a, -max_tfa, max_tfa)
+            track_val = int(frames[f] / num_dct_keys)
+            frame_val = numpy.clip(track_val, -max_amplitude, max_amplitude)
 
             if len(mixed_audio_data) <= f:
-                mixed_audio_data.append(val_v)
+                mixed_audio_data.append(frame_val)
             else:
-                mixed_audio_data[f] += val_v
+                mixed_audio_data[f] += frame_val
 
     return mixed_audio_data
 
@@ -101,44 +100,6 @@ def get_section_interval(root_interval, iter_count):
     return parts
 
 
-def compose_bar(track, instrument, note_lens, current_bar, bar_count, track_data_notes):
-    cur_bar = []
-    print('Current instrument: ' + str(instrument))
-    cur__note___len = float(note_lens[4])
-    center_distance = get_center_distance(bar_count, current_bar, True)
-
-    prv_bar_note = 0
-    bar_note__count = int(note_lens[0] / cur__note___len)
-
-    step_size = int(abs(len(track_data_notes) - 1) / bar_note__count)
-    data_______curs = int(((len(track_data_notes) * 0.8)) * center_distance)
-
-    max_note_pitch = int((track + 1) * 12)
-    arp_val = 0
-
-    # TODO: Get Avg Top(barnote_count) in range(step_size)
-
-    for note in range(bar_note__count):
-        # TODO: structure_pos = get_structpos(current_bar)
-        # TODO: Noteprob from centerdistance
-
-        raw_index_pos = abs(numpy.clip((data_______curs + note), 1, len(track_data_notes)) - 1)
-        raw_data_note = track_data_notes[raw_index_pos]
-        track_oct = int((abs(track * 12)))
-
-        scaled_bar_note = numpy.clip((raw_data_note), 0, max_note_pitch)
-        final_note = int((scaled_bar_note + track_oct) * center_distance)
-
-        if final_note == prv_bar_note:
-            cur_bar_note = int(abs(prv_bar_note - 12))
-            prv_bar_note = cur_bar_note
-
-
-        cur_bar.append([track, [abs(final_note), cur__note___len]])
-
-    return cur_bar
-
-
 def get_step_len(list_data, iter_len):
     return abs(int(len(list_data) / iter_len))
 
@@ -165,7 +126,7 @@ def get_base_pattern(seed_val, bp_length):
     return base_pattern
 
 
-def gen_note_bar(seed_data, base_pattern, note_lens, track_number, scale, center_distance, bar_num):
+def gen_bar(seed_data, base_pattern, note_lens, track_number, scale, center_distance, bar_num):
     bar = []
 
     num_notes = int(note_lens[0] / note_lens[numpy.clip(track_number,
@@ -183,8 +144,8 @@ def gen_note_bar(seed_data, base_pattern, note_lens, track_number, scale, center
     return bar
 
 
-def gen_note_track(seed_data, track_number, bar_count, note_lens):
-    composed_track = []
+def gen_track(seed_data, track_number, bar_count, note_lens):
+    track = []
     scale = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     base_pattern = get_base_pattern(seed_data, 32)
 
@@ -192,13 +153,13 @@ def gen_note_track(seed_data, track_number, bar_count, note_lens):
         cur_raw_note = abs(int(12 * math.sin(b * seed_data)))
 
         center_distance = get_center_distance(bar_count, b, True)
-        bar = gen_note_bar(cur_raw_note, base_pattern,
-                           note_lens,track_number, scale,
-                           center_distance, b)
+        bar = gen_bar(cur_raw_note, base_pattern,
+                            note_lens,track_number, scale,
+                            center_distance, b)
 
-        composed_track.append(bar)
+        track.append(bar)
 
-    return composed_track
+    return track
 
 
 def compose_song(seed_data, track_count, song_length, song_mode, bpm):
@@ -209,17 +170,17 @@ def compose_song(seed_data, track_count, song_length, song_mode, bpm):
     bar_count = int((song_length * 1000) / note_lens_list[0])
 
     for i in range(track_count):
-        inst_track = gen_note_track(seed_data, i, bar_count, note_lens_list)
+        inst_track = gen_track(seed_data, i, bar_count, note_lens_list)
         song[i].append(inst_track)
 
     return song
 
 
 def gen_arp_jazz(song_settings, seed_data):
-    song_dict = compose_song(seed_data,
+    raw_song_dict = compose_song(seed_data,
                              song_settings['num_tracks'],
                              song_settings['song_length'],
                              song_settings['song_mode'],
                              song_settings['bpm'])
 
-    return song_dict
+    return raw_song_dict

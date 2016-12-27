@@ -6,7 +6,6 @@ import random
 import datetime
 import collections
 
-# ------------------------------------------------------------------------------
 
 def json_to_dict(json_request):
     j_content = {}
@@ -18,19 +17,20 @@ def json_to_dict(json_request):
     return j_content
 
 
-def dict_to_json(input_data, filename, output_data_path):
+def get_date_name():
+    now = datetime.datetime.now()
+
+    date = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
+    clock = str(now.hour) + '.' + str(now.minute) + '.' + str(now.second)
+
+    return str(date + '_' + clock)
+
+
+def write_json(data_dict, filename, output_data_path):
     file_path = os.path.join(output_data_path, filename + '.json')
 
     with open(file_path, 'w') as fp:
-        json.dump(input_data, fp, sort_keys = True, indent = 4)
-
-
-def get_date_name(file_ext):
-    now = datetime.datetime.now()
-    song_date = str(now.hour) + '_' + str(now.minute) + '_' + str(now.second)
-    file_name = str(song_date) + '.' + str(file_ext)
-
-    return file_name
+        json.dump(data_dict, fp, sort_keys = True, indent = 4)
 
 
 def write_audio(file_path, filename, audio_data, num_chan, s_rate, num_samples):
