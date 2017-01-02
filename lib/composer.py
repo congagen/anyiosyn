@@ -45,24 +45,6 @@ def get_note_durations(bpm, num_durs):
     return dur_list, dur_dict
 
 
-def get_structpos(c_bar):
-    structure_position = 0
-
-    if c_bar % 4 == 0:
-        structure_position = 1
-
-    if c_bar % 8 == 0:
-        structure_position = 2
-
-    if c_bar % 16 == 0:
-        structure_position = 3
-
-    if c_bar % 32 == 0:
-        structure_position = 4
-
-    return structure_position
-
-
 def get_center_distance(total_count, cur_idx, inverted):
     mid = int(total_count * 0.5)
     distance = (abs(mid - cur_idx) / mid if (cur_idx < mid) else (cur_idx - (mid - 1))+1) / (mid+1)
@@ -106,10 +88,6 @@ def get_step_len(list_data, iter_len):
 
 def rotate_pattern(lsit_data, shift_count):
     return lsit_data[-shift_count % len(lsit_data):] + lsit_data[:-shift_count % len(lsit_data)]
-
-
-def compose_drone_bar(seed_data, track_number, scale, center_distance):
-    pass
 
 
 def note_to_scale(num_to_match, note_scale):
