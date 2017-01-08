@@ -1,7 +1,7 @@
 {
   "artist_name": "Example",
   "song_name": "Example",
-  "song_length": 240,
+  "song_length": 5,
   "bpm": 120,
   "num_tracks": 5,
   "num_channels": 2,

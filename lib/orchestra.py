@@ -7,9 +7,9 @@ import collections
 if sys.version[0] == '3':
     raw_input = input
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 cached_notes = {'NoteValue': array.array('h')}
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def dbg_write(bars, curr_b, note_pitch, note_duration, track_number):
@@ -19,6 +19,7 @@ def dbg_write(bars, curr_b, note_pitch, note_duration, track_number):
     dr = ' | NoteDuration: ' + str(note_duration)
 
     print(tr + br + no + dr)
+
 
 def fm_osc(curs, op1_note, op2_note, fm_amount, frq_env, s_rate):
     op1_freq = (s_rate * (1 / (abs(op1_note) + 1)))
@@ -74,16 +75,6 @@ def get_twelve_tone_list(num_octaves):
         note_list.append(note_val)
 
     return note_list
-
-
-def get_silence(note_length, s_rate):
-    num_frames = int((s_rate / 1000) * (note_length * 2))
-    audio_data = array.array('h')
-
-    for i in range(num_frames):
-        audio_data.append(0)
-
-    return audio_data, num_frames
 
 
 def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s_rate):

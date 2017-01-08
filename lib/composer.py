@@ -96,12 +96,83 @@ def note_to_scale(num_to_match, note_scale):
 
 def get_base_pattern(seed_val, bp_length):
     base_pattern = []
+
     for i in range(bp_length):
         val = abs(int(12 * math.sin(seed_val * i)))
-
         base_pattern.append(val)
 
     return base_pattern
+
+
+def iterate_m(z, maxiter):
+    c = z
+
+    for n in range(maxiter):
+        if abs(z) > 2:
+            return n
+
+        z = (z ** 2) + c
+
+    return 0
+
+
+def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale):
+    mandel_seq = []
+
+    x_len = numpy.linspace(-2, 1, track_l + seq_l)
+    y_len = numpy.linspace(-1.25, 1.25, track_l + seq_l)
+
+    p_val = 0
+
+    for i in range(seq_l):
+        xy_pos = track_x + i
+
+        c = complex(x_len[xy_pos], y_len[xy_pos])
+        iter_num = iterate_m(c, 10)
+
+        p_val += iter_num
+        idx = int(abs(math.sin(p_val * iter_num * 0.1)) * len(scale))
+
+        noteval = scale[idx]
+
+        mandel_seq.append(noteval)
+
+    return mandel_seq
+
+
+def compose_koch(seed_seq, c_distance, step_size):
+    koch_seq = []
+    seq_third = int(len(seed_seq) / 3)
+    seq_sixth = int(len(seed_seq) / 6)
+
+    k_range_a = range(seq_third, seq_third + seq_sixth)
+    k_range_b = range(seq_third + seq_sixth, seq_third + seq_third)
+
+    step_pos = 0
+
+    for i in range(len(seed_seq)):
+        raw_val = seed_seq[i]
+        raw_avg = sum(seed_seq)
+
+        if i in k_range_a:
+            step_pos += step_size
+
+            kch_val = raw_val + int(step_pos)
+            koch_seq.append(kch_val)
+        elif i in k_range_b:
+            step_pos -= step_size
+
+            kch_val = raw_val + int(step_pos)
+            koch_seq.append(abs(kch_val))
+        else:
+            koch_seq.append(abs(raw_val))
+
+    return koch_seq
+
+
+def compose_julia(seed_nums_list, iterations):
+    pass
+
 
 
 def gen_bar(seed_data, base_pattern, note_lens, track_number, scale, center_distance, bar_num):
