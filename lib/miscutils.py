@@ -12,7 +12,6 @@ def json_to_dict(json_request):
 
     with open(json_request) as json_data:
         j_content = json.load(json_data)
-        print(j_content)
 
     return j_content
 

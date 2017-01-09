@@ -116,7 +116,19 @@ def iterate_m(z, maxiter):
     return 0
 
 
-def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale):
+def iterate_j(z, maxiter):
+    c = z
+
+    for n in range(maxiter):
+        if abs(z) > 2:
+            return n
+
+        z = (z ** 2) + c
+
+    return 0
+
+
+def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor):
     mandel_seq = []
 
     x_len = numpy.linspace(-2, 1, track_l + seq_l)
@@ -135,12 +147,12 @@ def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale):
 
         noteval = scale[idx]
 
-        mandel_seq.append(noteval)
+        mandel_seq.append(note_floor + noteval)
 
     return mandel_seq
 
 
-def compose_koch(seed_seq, c_distance, step_size):
+def compose_koch_a(seed_seq, c_distance, step_size):
     koch_seq = []
     seq_third = int(len(seed_seq) / 3)
     seq_sixth = int(len(seed_seq) / 6)
@@ -170,66 +182,110 @@ def compose_koch(seed_seq, c_distance, step_size):
     return koch_seq
 
 
-def compose_julia(seed_nums_list, iterations):
-    pass
+def compose_koch_b(track_l, track_x, seq_l, c_distance, scale, step_size):
+    koch_seq = []
+    seq_third = int(seq_l / 3)
+    seq_sixth = int(seq_l / 6)
+
+    k_range_a = range(seq_third, seq_third + seq_sixth)
+    k_range_b = range(seq_third + seq_sixth, seq_third + seq_third)
+
+    step_pos = 0
+
+    for i in range(seq_l):
+        raw_val = 1
+
+        if i in k_range_a:
+            step_pos += step_size
+
+            kch_val = raw_val + int(step_pos)
+            koch_seq.append(kch_val)
+        elif i in k_range_b:
+            step_pos -= step_size
+
+            kch_val = raw_val + int(step_pos)
+            koch_seq.append(abs(kch_val))
+        else:
+            koch_seq.append(abs(raw_val))
+
+    return koch_seq
 
 
-
-def gen_bar(seed_data, base_pattern, note_lens, track_number, scale, center_distance, bar_num):
+def basic_arp(seed_pattern, num_notes, track_number, bar_num, c_distance):
     bar = []
 
-    num_notes = int(note_lens[0] / note_lens[numpy.clip(track_number,
-                                                        0, (len(note_lens) - 1))])
+    for i in num_notes:
+        init_note = seed_pattern[numpy.clip(i, 0, len(seed_pattern))]
+        cent_val = abs(math.sin((c_distance * num_notes) * (c_distance * num_notes)))
+        arp_num = int((((((i + bar_num) % (track_number + 1)))) * cent_val) * 12)
 
-    for i in range(num_notes):
-        init_note = base_pattern[numpy.clip(i, 0, len(base_pattern))]
-
-        # TODO: th.pow
-        cent_val = abs(math.sin((center_distance * num_notes) * (center_distance * num_notes)))
-        arp_num = int((((((i + bar_num) % (track_number + 1)) )) * cent_val) * 12)
-
-        bar.append(init_note + arp_num)
+        bar.append(int(init_note + arp_num))
 
     return bar
 
 
-def gen_track(seed_data, track_number, bar_count, note_lens):
+
+def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
     track = []
-    scale = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    base_pattern = get_base_pattern(seed_data, 32)
+    seed_pattern = get_base_pattern(seed_data, 32)
+
+    track_count = s_settings['num_tracks']
+    note_lens = get_note_durations(s_settings['bpm'], track_count)
+    note_count_bar = int(note_lens[0][0] / note_lens[0][track_number])
+
 
     for b in range(bar_count):
-        cur_raw_note = abs(int(12 * math.sin(b * seed_data)))
-
         center_distance = get_center_distance(bar_count, b, True)
-        bar = gen_bar(cur_raw_note, base_pattern,
-                            note_lens,track_number, scale,
-                            center_distance, b)
+        tot_num_notes = int(bar_count * note_count_bar)
+        song_note_count = int(b * note_count_bar)
 
-        track.append(bar)
+        if s_settings['comp_algo'] <= 0:
+            bar = basic_arp(seed_pattern,
+                            note_count_bar,
+                            track_number,
+                            b,
+                            center_distance)
+            track.append(bar)
+
+        if s_settings['comp_algo'] == 1:
+            bar = compose_koch_b([1] * note_count_bar,
+                                 center_distance,
+                                 1,
+                                 1)
+            track.append(bar)
+
+        if s_settings['comp_algo'] >= 2:
+            n_floor = int(track_number * 12)
+
+            bar = compose_mandelbrot(tot_num_notes,
+                                     song_note_count,
+                                     note_count_bar,
+                                     center_distance,
+                                     scale,
+                                     n_floor)
+
+            track.append(bar)
 
     return track
 
 
-def compose_song(seed_data, track_count, song_length, song_mode, bpm):
+def compose_song(s_settings, seed_data, scale):
     song = collections.defaultdict(list)
-    bpm = numpy.clip(bpm, 1, 9999)
+    bpm = numpy.clip(s_settings['bpm'], 1, 9999)
 
-    note_lens_list = get_note_durations(bpm, 7)[0]
-    bar_count = int((song_length * 1000) / note_lens_list[0])
+    note_lens = get_note_durations(bpm, 100)
+    single_bar_duration = note_lens[0][0]
 
-    for i in range(track_count):
-        inst_track = gen_track(seed_data, i, bar_count, note_lens_list)
-        song[i].append(inst_track)
+    bar_count = int((s_settings['song_length'] * 1000) / single_bar_duration)
+
+    for i in range(s_settings['num_tracks']):
+        track = gen_track(s_settings,
+                          seed_data,
+                          i,
+                          bar_count,
+                          note_lens[0],
+                          scale)
+
+        song[i].append(track)
 
     return song
-
-
-def gen_arp_jazz(song_settings, seed_data):
-    raw_song_dict = compose_song(seed_data,
-                             song_settings['num_tracks'],
-                             song_settings['song_length'],
-                             song_settings['song_mode'],
-                             song_settings['bpm'])
-
-    return raw_song_dict
