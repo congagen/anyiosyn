@@ -29,18 +29,18 @@ def mix_song(song_dct):
 
 def get_note_durations(bpm, num_durs):
     whole_note = (60000 * (1 / bpm)) * 4
-    prv_note = whole_note * 2
+    prev_note = whole_note * 2
 
     dur_list = []
     dur_dict = {}
 
     for i in range(num_durs):
-        dur_val = (prv_note) * 0.5
+        dur_val = (prev_note) * 0.5
         key_name = int(whole_note / dur_val)
 
         dur_list.append(dur_val)
         dur_dict[str(key_name)] = dur_val
-        prv_note = dur_val
+        prev_note = dur_val
 
     return dur_list, dur_dict
 
@@ -116,6 +116,14 @@ def iterate_m(z, maxiter):
     return 0
 
 
+def sin_index(item_list, sin_vals):
+
+    s_val = abs(math.sin(sum(sin_vals)))
+    idx = int(len(item_list) * s_val)
+
+    return idx
+
+
 def iterate_j(z, maxiter):
     c = z
 
@@ -128,26 +136,37 @@ def iterate_j(z, maxiter):
     return 0
 
 
-def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor):
+def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor, max_iter, destall):
     mandel_seq = []
 
-    x_len = numpy.linspace(-2, 1, track_l + seq_l)
-    y_len = numpy.linspace(-1.25, 1.25, track_l + seq_l)
+    x_dim = numpy.linspace(-2, 1, track_l + seq_l)
+    y_dim = numpy.linspace(-1.25, 1.25, track_l + seq_l)
 
-    p_val = 0
+    iter_sum = 0
+    new_note = 0
+    prev_note = 0
 
     for i in range(seq_l):
         xy_pos = track_x + i
 
-        c = complex(x_len[xy_pos], y_len[xy_pos])
-        iter_num = iterate_m(c, 10)
+        x_sin = int(abs(math.sin(xy_pos * 0.1)) * (len(x_dim) * 0.5))
+        y_cos = int(abs(math.cos(xy_pos * 0.1)) * (len(y_dim) * 0.5))
 
-        p_val += iter_num
-        idx = int(abs(math.sin(p_val * iter_num * 0.1)) * len(scale))
+        c = complex(x_dim[x_sin], y_dim[y_cos])
 
-        noteval = scale[idx]
+        iter_num = iterate_m(c, max_iter)
+        iter_sum += iter_num
 
-        mandel_seq.append(note_floor + noteval)
+        idx = sin_index(scale, [iter_sum * iter_num * 0.1])
+
+        if prev_note == new_note and destall:
+            new_note = (scale[idx] + note_floor) + 1
+        else:
+            new_note = (scale[idx] + note_floor)
+
+        prev_note = prev_note
+
+        mandel_seq.append(new_note)
 
     return mandel_seq
 
@@ -224,7 +243,6 @@ def basic_arp(seed_pattern, num_notes, track_number, bar_num, c_distance):
     return bar
 
 
-
 def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
     track = []
     seed_pattern = get_base_pattern(seed_data, 32)
@@ -235,7 +253,7 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
 
 
     for b in range(bar_count):
-        center_distance = get_center_distance(bar_count, b, True)
+        center_distance = get_center_distance(bar_count, b, False)
         tot_num_notes = int(bar_count * note_count_bar)
         song_note_count = int(b * note_count_bar)
 
@@ -257,12 +275,16 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
         if s_settings['comp_algo'] >= 2:
             n_floor = int(track_number * 12)
 
+            print("CenterD: " + str(center_distance))
+
             bar = compose_mandelbrot(tot_num_notes,
                                      song_note_count,
                                      note_count_bar,
                                      center_distance,
                                      scale,
-                                     n_floor)
+                                     n_floor,
+                                     50,
+                                     True)
 
             track.append(bar)
 

@@ -4,10 +4,11 @@
 
   "comp_algo": 2,
 
-  "song_length": 60,
+  "song_length": 240,
   "bpm": 120,
 
   "num_tracks": 5,
+  "song_octaves": 4,
   "track_octaves": 4,
 
   "num_channels": 2,
