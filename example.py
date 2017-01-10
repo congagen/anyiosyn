@@ -49,5 +49,4 @@ def gen_song(json_rqs):
                               raw_audio[1])
 
 
-#gen_song(sys.argv[1])
-gen_song('example.json')
+gen_song(sys.argv[1])
