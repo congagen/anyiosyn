@@ -47,7 +47,7 @@ def get_note_durations(bpm, num_durs):
 
 def get_center_distance(total_count, cur_idx, inverted):
     mid = int(total_count * 0.5)
-    distance = (abs(mid - cur_idx) / mid if (cur_idx < mid) else (cur_idx - (mid - 1))+1) / (mid+1)
+    distance = abs(mid - cur_idx) / mid if (cur_idx < mid) else ((cur_idx - (mid - 1)) + 1 ) / (mid + 1)
 
     return abs(1 - distance) if inverted else distance
 
@@ -173,11 +173,10 @@ def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor, m
 
 def compose_koch_a(seed_seq, c_distance, step_size):
     koch_seq = []
-    seq_third = int(len(seed_seq) / 3)
     seq_sixth = int(len(seed_seq) / 6)
 
-    k_range_a = range(seq_third, seq_third + seq_sixth)
-    k_range_b = range(seq_third + seq_sixth, seq_third + seq_third)
+    k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
+    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
 
     step_pos = 0
 
@@ -203,11 +202,10 @@ def compose_koch_a(seed_seq, c_distance, step_size):
 
 def compose_koch_b(track_l, track_x, seq_l, c_distance, scale, step_size):
     koch_seq = []
-    seq_third = int(seq_l / 3)
     seq_sixth = int(seq_l / 6)
 
-    k_range_a = range(seq_third, seq_third + seq_sixth)
-    k_range_b = range(seq_third + seq_sixth, seq_third + seq_third)
+    k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
+    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
 
     step_pos = 0
 

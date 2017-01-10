@@ -7,6 +7,8 @@
   "song_length": 240,
   "bpm": 120,
 
+  "mix_tracks": true,
+
   "num_tracks": 5,
   "song_octaves": 4,
   "track_octaves": 4,
