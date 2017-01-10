@@ -39,14 +39,24 @@ def gen_song(json_rqs):
                                             gen_settings['sample_rate'],
                                             note_durations)
 
-        mixed_audio = composer.mix_song(raw_audio[0])
+        if gen_settings['mix_tracks']:
+            mixed_audio = composer.mix_song(raw_audio[0])
 
-        miscutils.write_audio(gen_settings['output_data_path'],
-                              au_filename,
-                              mixed_audio,
-                              gen_settings['num_channels'],
-                              gen_settings['sample_rate'],
-                              raw_audio[1])
+            miscutils.write_audio(gen_settings['output_data_path'],
+                                  au_filename,
+                                  mixed_audio,
+                                  gen_settings['num_channels'],
+                                  gen_settings['sample_rate'],
+                                  raw_audio[1])
+        else:
+            mixed_audio = composer.mix_song(raw_audio[0])
 
+            miscutils.write_audio(gen_settings['output_data_path'],
+                                  au_filename,
+                                  mixed_audio,
+                                  gen_settings['num_channels'],
+                                  gen_settings['sample_rate'],
+                                  raw_audio[1])
 
-gen_song(sys.argv[1])
+#gen_song(sys.argv[1])
+gen_song('example.json')

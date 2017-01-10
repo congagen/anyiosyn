@@ -104,16 +104,7 @@ def get_base_pattern(seed_val, bp_length):
     return base_pattern
 
 
-def iterate_m(z, maxiter):
-    c = z
 
-    for n in range(maxiter):
-        if abs(z) > 2:
-            return n
-
-        z = (z ** 2) + c
-
-    return 0
 
 
 def sin_index(item_list, sin_vals):
@@ -125,6 +116,18 @@ def sin_index(item_list, sin_vals):
 
 
 def iterate_j(z, maxiter):
+    c = z
+
+    for n in range(maxiter):
+        if abs(z) > 2:
+            return n
+
+        z = (z ** 2) + c
+
+    return 0
+
+
+def iterate_m(z, maxiter):
     c = z
 
     for n in range(maxiter):
@@ -171,41 +174,12 @@ def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor, m
     return mandel_seq
 
 
-def compose_koch_a(seed_seq, c_distance, step_size):
-    koch_seq = []
-    seq_sixth = int(len(seed_seq) / 6)
-
-    k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
-    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
-
-    step_pos = 0
-
-    for i in range(len(seed_seq)):
-        raw_val = seed_seq[i]
-        raw_avg = sum(seed_seq)
-
-        if i in k_range_a:
-            step_pos += step_size
-
-            kch_val = raw_val + int(step_pos)
-            koch_seq.append(kch_val)
-        elif i in k_range_b:
-            step_pos -= step_size
-
-            kch_val = raw_val + int(step_pos)
-            koch_seq.append(abs(kch_val))
-        else:
-            koch_seq.append(abs(raw_val))
-
-    return koch_seq
-
-
-def compose_koch_b(track_l, track_x, seq_l, c_distance, scale, step_size):
+def compose_koch(track_l, track_x, seq_l, c_distance, scale, step_size):
     koch_seq = []
     seq_sixth = int(seq_l / 6)
 
     k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
-    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
+    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 5))
 
     step_pos = 0
 
@@ -231,7 +205,7 @@ def compose_koch_b(track_l, track_x, seq_l, c_distance, scale, step_size):
 def basic_arp(seed_pattern, num_notes, track_number, bar_num, c_distance):
     bar = []
 
-    for i in num_notes:
+    for i in range(num_notes):
         init_note = seed_pattern[numpy.clip(i, 0, len(seed_pattern))]
         cent_val = abs(math.sin((c_distance * num_notes) * (c_distance * num_notes)))
         arp_num = int((((((i + bar_num) % (track_number + 1)))) * cent_val) * 12)
@@ -261,19 +235,18 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
                             track_number,
                             b,
                             center_distance)
+
             track.append(bar)
 
         if s_settings['comp_algo'] == 1:
-            bar = compose_koch_b([1] * note_count_bar,
-                                 center_distance,
-                                 1,
-                                 1)
+            bar = compose_koch([1] * note_count_bar,
+                                center_distance,
+                                1,
+                                1)
             track.append(bar)
 
         if s_settings['comp_algo'] >= 2:
             n_floor = int(track_number * 12)
-
-            print("CenterD: " + str(center_distance))
 
             bar = compose_mandelbrot(tot_num_notes,
                                      song_note_count,

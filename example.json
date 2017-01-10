@@ -2,7 +2,7 @@
   "artist_name": "Example",
   "song_name": "Example",
 
-  "comp_algo": 2,
+  "comp_algo": 0,
 
   "song_length": 240,
   "bpm": 120,
