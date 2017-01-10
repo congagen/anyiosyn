@@ -104,9 +104,6 @@ def get_base_pattern(seed_val, bp_length):
     return base_pattern
 
 
-
-
-
 def sin_index(item_list, sin_vals):
 
     s_val = abs(math.sin(sum(sin_vals)))
@@ -115,21 +112,8 @@ def sin_index(item_list, sin_vals):
     return idx
 
 
-def iterate_j(z, maxiter):
-    c = z
-
-    for n in range(maxiter):
-        if abs(z) > 2:
-            return n
-
-        z = (z ** 2) + c
-
-    return 0
-
-
 def iterate_m(z, maxiter):
     c = z
-
     for n in range(maxiter):
         if abs(z) > 2:
             return n
@@ -167,7 +151,7 @@ def compose_mandelbrot(track_l, track_x, seq_l, c_distance, scale, note_floor, m
         else:
             new_note = (scale[idx] + note_floor)
 
-        prev_note = prev_note
+        prev_note = new_note
 
         mandel_seq.append(new_note)
 
@@ -202,7 +186,7 @@ def compose_koch(track_l, track_x, seq_l, c_distance, scale, step_size):
     return koch_seq
 
 
-def basic_arp(seed_pattern, num_notes, track_number, bar_num, c_distance):
+def compose_raw(seed_pattern, num_notes, track_number, bar_num, c_distance):
     bar = []
 
     for i in range(num_notes):
@@ -230,11 +214,11 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
         song_note_count = int(b * note_count_bar)
 
         if s_settings['comp_algo'] <= 0:
-            bar = basic_arp(seed_pattern,
-                            note_count_bar,
-                            track_number,
-                            b,
-                            center_distance)
+            bar = compose_raw(seed_pattern,
+                              note_count_bar,
+                              track_number,
+                              b,
+                              center_distance)
 
             track.append(bar)
 
@@ -243,6 +227,7 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
                                 center_distance,
                                 1,
                                 1)
+
             track.append(bar)
 
         if s_settings['comp_algo'] >= 2:
@@ -254,7 +239,7 @@ def gen_track(s_settings, seed_data, track_number, bar_count, note_lens, scale):
                                      center_distance,
                                      scale,
                                      n_floor,
-                                     50,
+                                     10,
                                      True)
 
             track.append(bar)

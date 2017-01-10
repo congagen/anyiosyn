@@ -3,6 +3,7 @@ from lib import composer
 from lib import miscutils
 from lib import orchestra
 
+
 def gen_song(json_rqs):
     scales = miscutils.json_to_dict("data/scales.json")
     gen_settings = miscutils.json_to_dict(json_rqs)
@@ -51,12 +52,13 @@ def gen_song(json_rqs):
         else:
             mixed_audio = composer.mix_song(raw_audio[0])
 
-            miscutils.write_audio(gen_settings['output_data_path'],
-                                  au_filename,
-                                  mixed_audio,
-                                  gen_settings['num_channels'],
-                                  gen_settings['sample_rate'],
-                                  raw_audio[1])
+            for k in raw_audio[0].keys():
+                miscutils.write_audio(gen_settings['output_data_path'],
+                                      au_filename + str(),
+                                      mixed_audio,
+                                      gen_settings['num_channels'],
+                                      gen_settings['sample_rate'],
+                                      raw_audio[1])
 
 #gen_song(sys.argv[1])
 gen_song('example.json')
