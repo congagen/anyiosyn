@@ -6,58 +6,57 @@ from lib import orchestra
 
 def gen_song(json_rqs):
     scales = miscutils.json_to_dict("data/scales.json")
-    gen_settings = miscutils.json_to_dict(json_rqs)
-
-    r_seed = miscutils.get_composite_seed(gen_settings['r_seed_num'],
-                                          gen_settings['r_seed_string'],
-                                          gen_settings['r_seed_data_path'],
-                                          gen_settings['num_data_samples'])
-
-    note_durations = composer.get_note_durations(gen_settings['bpm'],
-                                                 gen_settings['num_tracks'])
-
     scale = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-    song_dict = composer.compose_song(gen_settings, r_seed, scale)
+    song_conf = miscutils.json_to_dict(json_rqs)
+
+    r_seed = miscutils.get_composite_seed(song_conf['r_seed_num'],
+                                          song_conf['r_seed_string'],
+                                          song_conf['r_seed_data_path'],
+                                          song_conf['num_data_samples'])
+
+    note_durations = composer.get_note_durations(song_conf['bpm'],
+                                                 song_conf['num_tracks'])
 
 
-    nms = gen_settings['artist_name'], gen_settings['song_name']
+    song_dict = composer.compose_song(song_conf, r_seed, scale)
+
+
+    nms = song_conf['artist_name'], song_conf['song_name']
     filename = nms[0] + '_-_' + nms[1] + '_(' + miscutils.get_date_name() + ')'
 
 
-    if gen_settings['write_json']:
-        json_filename = filename
-
+    if song_conf['write_json']:
         miscutils.write_json(song_dict,
-                             json_filename,
-                             gen_settings['output_data_path'])
+                             filename,
+                             song_conf['output_data_path'])
 
 
-    if gen_settings['write_audio']:
+    if song_conf['write_audio']:
         au_filename = filename + '.wav'
 
         raw_audio = orchestra.render_tracks(song_dict,
-                                            gen_settings['sample_rate'],
+                                            song_conf['sample_rate'],
                                             note_durations)
 
-        if gen_settings['mix_tracks']:
+        if song_conf['mix_tracks']:
             mixed_audio = composer.mix_song(raw_audio[0])
 
-            miscutils.write_audio(gen_settings['output_data_path'],
+            miscutils.write_audio(song_conf['output_data_path'],
                                   au_filename,
                                   mixed_audio,
-                                  gen_settings['num_channels'],
-                                  gen_settings['sample_rate'],
+                                  song_conf['num_channels'],
+                                  song_conf['sample_rate'],
                                   raw_audio[1])
         else:
-            mixed_audio = composer.mix_song(raw_audio[0])
-
             for k in raw_audio[0].keys():
-                miscutils.write_audio(gen_settings['output_data_path'],
-                                      au_filename + str(),
-                                      mixed_audio,
-                                      gen_settings['num_channels'],
-                                      gen_settings['sample_rate'],
+                audio = raw_audio[0][k][0]
+
+                miscutils.write_audio(song_conf['output_data_path'],
+                                      str(k) + au_filename,
+                                      audio,
+                                      song_conf['num_channels'],
+                                      song_conf['sample_rate'],
                                       raw_audio[1])
 
 #gen_song(sys.argv[1])
