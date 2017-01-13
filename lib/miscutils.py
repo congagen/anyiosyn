@@ -266,7 +266,7 @@ def get_seed_number(num_list):
 
 
 def seed_from_bin_data(input_data_path, seed_resolution):
-    seed_number = random.randint(10000000, 1000000000000)
+    seed_number = 0
 
     if len(input_data_path) > 2 and os.path.isfile(input_data_path):
         raw_bin_data = get_bin_data([input_data_path])
@@ -275,7 +275,6 @@ def seed_from_bin_data(input_data_path, seed_resolution):
         seed_number = get_seed_number(ordinal_data)
         return seed_number
     else:
-        print('No seed data @ " ' + str(input_data_path) + ' ", random int used')
         return seed_number
 
 

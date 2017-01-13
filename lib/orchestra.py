@@ -48,12 +48,11 @@ def envelope(cursor, num_frames, a, s, r):
 
     if int(cursor) < int(num_a_frames):
         current_envelope = cursor * (1 / num_a_frames)
+    elif int(cursor) > int(num_a_frames + num_s_frames):
+        dec_val = (1.0 / num_r_frames) * (cursor - (num_a_frames + num_s_frames))
+        current_envelope = 1.0 - dec_val
     else:
-        if int(cursor) > int(num_a_frames + num_s_frames):
-            dec_val = (1.0 / num_r_frames) * (cursor - (num_a_frames + num_s_frames))
-            current_envelope = 1.0 - dec_val
-        else:
-            current_envelope = 1.0
+        current_envelope = 1.0
 
     envelope_value = numpy.clip([current_envelope], 0.0001, 1.0000)
 
@@ -81,12 +80,11 @@ def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s
     audio_data = array.array('h')
 
     num_frames = int(((s_rate / 1000) * (note_length * 2)))
-    note_len_list = get_twelve_tone_list(100)
+    note_freq_list = get_twelve_tone_list(100)
     max_amplitude = 30000
 
-
     if twelvetone_note:
-        current_note = note_len_list[int(numpy.clip([int(note_value)], 1, 96))]
+        current_note = note_freq_list[note_value]
     else:
         current_note = note_value * 100
 
@@ -108,7 +106,7 @@ def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s
     return audio_data, num_frames
 
 
-def render_track(track_bars, track_number, sample_rate, note_durations):
+def render_track(track_bars, track_dur, sample_rate, note_len, track_num):
     track_audio_data = array.array('h')
     num_frames = 0
 
@@ -116,17 +114,13 @@ def render_track(track_bars, track_number, sample_rate, note_durations):
         bar_notes = track_bars[i]
 
         for n in range(len(bar_notes)):
-
             b_note = bar_notes[n]
-
-            note_duration = float(note_durations[0][track_number])
-
-            note_key = str(b_note) + str(note_duration)
+            note_key = str(b_note) + str(note_len)
 
             if note_key in cached_notes:
                 note_audio_data = cached_notes[note_key]
             else:
-                note_audio_data = get_note(True, b_note, b_note, note_duration,
+                note_audio_data = get_note(True, b_note, b_note, note_len,
                                            0.01, 1.0, 0.2, sample_rate)
 
                 cached_notes[note_key] = note_audio_data
@@ -134,19 +128,30 @@ def render_track(track_bars, track_number, sample_rate, note_durations):
             track_audio_data += note_audio_data[0]
             num_frames += note_audio_data[1]
 
-            dbg_write(track_bars, i, b_note, note_duration, track_number)
+            dbg_write(track_bars, i, b_note, note_len, track_num)
 
     return [track_audio_data, num_frames]
 
 
-def render_tracks(song_dict, sample_rate, note_durations):
+def render_tracks(song_dict, song_conf, note_durations):
     song_audio_data = collections.defaultdict(list)
     num_frames = 0
 
-    for track, bar in song_dict.items():
-        c_track = render_track(song_dict[track][0], track, sample_rate, note_durations)
+    sample_rate = song_conf['sample_rate']
+    count = 0
 
-        song_audio_data[track].append(c_track[0])
+    for k, v in song_dict.items():
+        itm = song_dict[k]
+        note_len = k
+
+        c_track = render_track(itm[0],
+                               k,
+                               sample_rate,
+                               note_len,
+                               count)
+
+        count += 1
+        song_audio_data[k].append(c_track[0])
         num_frames = c_track[1]
 
     return [song_audio_data, num_frames]

@@ -1,30 +1,21 @@
 {
-  "artist_name": "Example",
-  "song_name": "Example",
+  "artist_name": "A",
+  "song_name": "A",
 
   "comp_algo": 0,
 
-  "song_length": 120,
+  "song_length": 10,
   "bpm": 120,
 
-  "mix_tracks": true,
+  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 48]],
 
+  "mix_tracks": true,
   "raw_algo": true,
-  "step_size": 12,
+  "step_size": 3,
   "destall": true,
   "max_iter": 20,
 
-  "num_tracks": 5,
-  "song_octaves": 4,
-  "track_octaves": 4,
-
-
-  "1/32": true,
-  "1/16": true,
-  "1/8": true,
-  "1/4": true,
-  "1/2": true,
-  "1/1": true,
+  "conform_to_scale": false,
 
   "num_channels": 2,
   "use_scale": 1,
@@ -37,7 +28,6 @@
   "num_data_samples": 100000,
 
   "mml_pattern": "E5R1E3R0D3R0E3R0E1R0D1R0-G4R1",
-  "meta": "Example meta",
 
   "write_audio": true,
   "write_json": true,

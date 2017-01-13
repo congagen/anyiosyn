@@ -4,16 +4,18 @@ import numpy
 import collections
 
 
-def mix_song(song_dct):
+def mix_tracks(song_dct):
     mixed_audio_data = array.array('h')
     num_dct_keys = len(song_dct.keys())
     max_amplitude = int(30000 / (num_dct_keys + 1)) # tfa: track_frame_amplitude
+    count = 0
 
     for k, v in song_dct.items():
         track = k
         frames = song_dct[k][0]
 
-        print('Mixing Track: ' + str(track + 1) + ' | Frames: ' + str(len(frames)))
+        count += 1
+        print('Mixing Track: ' + str(count) + ' | Frames: ' + str(len(frames)))
 
         for f in range(len(frames)):
             track_val = int(frames[f] / num_dct_keys)
@@ -23,6 +25,7 @@ def mix_song(song_dct):
                 mixed_audio_data.append(frame_val)
             else:
                 mixed_audio_data[f] += frame_val
+
 
     return mixed_audio_data
 
@@ -125,6 +128,13 @@ def iterate_m(z, maxiter):
 
 def compose_fibo(gen_conf, note_index, bar, c_distance):
 
+    track_l = gen_conf['tot_num_notes'] if 'tot_num_notes' in gen_conf.keys() else 160
+    note_count = gen_conf['note_count'] if 'note_count' in gen_conf.keys() else 16
+    scale = gen_conf['scale'] if 'scale' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10,11,12]
+    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
+    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
+    max_iter = gen_conf['max_iter'] if 'max_iter' in gen_conf.keys() else 50
+    raw_mandel = gen_conf['raw_algo'] if 'raw_algo' in gen_conf.keys() else True
 
     pass
 
@@ -132,24 +142,23 @@ def compose_fibo(gen_conf, note_index, bar, c_distance):
 def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
     mandel_seq = []
 
-    track_l = gen_conf['tot_num_notes']
-    seq_l = gen_conf['note_count']
-    track_x = note_index
-    scale = gen_conf['scale']
-    note_floor = gen_conf['note_floor']
-    destall = gen_conf['destall']
-    max_iter = gen_conf['max_iter']
-    raw_mandel = gen_conf['raw_algo']
+    note_count_track = gen_conf['note_count_track'] if 'note_count_track' in gen_conf.keys() else 160
+    note_count_bar = gen_conf['note_count_bar'] if 'note_count_bar' in gen_conf.keys() else 16
+    scale = gen_conf['scale'] if 'scale' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10,11,12]
+    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
+    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
+    max_iter = gen_conf['max_iter'] if 'max_iter' in gen_conf.keys() else 50
+    raw_algo = gen_conf['raw_algo'] if 'raw_algo' in gen_conf.keys() else True
 
-    x_dim = numpy.linspace(-2, 1, track_l + seq_l)
-    y_dim = numpy.linspace(-1.25, 1.25, track_l + seq_l)
+    x_dim = numpy.linspace(-2, 1, note_count_track + note_count_bar)
+    y_dim = numpy.linspace(-1.25, 1.25, note_count_track + note_count_bar)
 
     iter_sum = 0
     new_note = 0
     prev_note = 0
 
-    for i in range(seq_l):
-        xy_pos = track_x + i
+    for i in range(note_count_bar):
+        xy_pos = note_index + i
 
         x_sin = int(abs(math.sin(xy_pos * 0.1)) * (len(x_dim) * 0.5))
         y_cos = int(abs(math.cos(xy_pos * 0.1)) * (len(y_dim) * 0.5))
@@ -158,18 +167,17 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
 
         iter_num = iterate_m(c, max_iter)
 
-        if raw_mandel:
-            new_note = iter_num + note_floor
+        if raw_algo:
+            new_note = note_floor + iter_num
         else:
             iter_sum += iter_num
             idx = sin_index(scale, [iter_sum * iter_num * 0.1])
             new_note = (scale[idx] + note_floor)
 
         if prev_note == new_note and destall:
-            new_note += 1
+            new_note += 12
 
         prev_note = new_note
-
         mandel_seq.append(new_note)
 
     return mandel_seq
@@ -177,28 +185,31 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
 
 def compose_koch(gen_conf, note_index, bar, c_distance):
     koch_seq = []
-    seq_sixth = int(gen_conf['note_count'] / 6)
+    seq_sixth = int(gen_conf['note_count_bar'] / 6)
 
-    k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
+    k_range_a = range(int(seq_sixth * 1), int(seq_sixth * 3))
     k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 5))
+    step_size = gen_conf['step_size'] if 'step_size' in gen_conf.keys() else 3
 
     step_pos = 0
 
-    for i in range(gen_conf['note_count']):
+    for i in range(gen_conf['note_count_bar']):
         raw_val = 1
 
         if i in k_range_a:
-            step_pos += gen_conf['step_size']
+            step_pos += step_size
+            new_note = raw_val + int(step_pos)
+            koch_seq.append(new_note)
 
-            kch_val = raw_val + int(step_pos)
-            koch_seq.append(kch_val)
         elif i in k_range_b:
-            step_pos -= gen_conf['step_size']
+            step_pos -= step_size
+            new_note = raw_val + int(step_pos)
+            koch_seq.append(abs(new_note))
 
-            kch_val = raw_val + int(step_pos)
-            koch_seq.append(abs(kch_val))
         else:
             koch_seq.append(abs(raw_val))
+            print(abs(raw_val))
+
 
     return koch_seq
 
@@ -206,36 +217,48 @@ def compose_koch(gen_conf, note_index, bar, c_distance):
 def compose_raw(gen_conf, note_index, bar, c_distance):
     bar = []
 
-    seed_pattern = gen_conf['seed_pattern']
-    num_notes = gen_conf['tot_num_notes']
-    current_bar = gen_conf['tot_num_notes']
-    track_number = gen_conf['tot_num_notes']
+    note_count = gen_conf['note_count_bar'] if 'note_count_bar' in gen_conf.keys() else 16
+    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
+    seed_pattern = gen_conf['seed_pattern'] if 'seed_pattern' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10]
+    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
 
-    for i in range(gen_conf['note_count']):
-        init_note = seed_pattern[numpy.clip(i, 0, len(seed_pattern))]
-        cent_val = abs(math.sin((c_distance * num_notes) * (c_distance * num_notes)))
-        arp_num = int((((((i + current_bar) % (track_number + 1)))) * cent_val) * 12)
+    prv_note = 0
+    new_note = 0
 
-        bar.append(int(init_note + arp_num))
+    print(seed_pattern)
+
+    for i in range(note_count):
+        idx = int(len(seed_pattern) * c_distance)
+        data_note = seed_pattern[idx]
+        new_note = int(note_floor + data_note)
+
+        if new_note == prv_note and destall:
+            prv_note = new_note + 12
+            bar.append(new_note + 12)
+        else:
+            prv_note = new_note
+            bar.append(new_note)
+
 
     return bar
 
 
-def gen_track(song_conf, seed_data, track_number, bar_count, note_lens, scale):
+def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_floor, scale):
     track = []
 
     seed_pattern = get_base_pattern(seed_data, 32)
-    note_lens = get_note_durations(song_conf['bpm'], track_number + 1)
-    note_count = int(note_lens[0][0] / note_lens[0][track_number])
+    note_lens = get_note_durations(song_conf['bpm'], 100)
+    note_count_bar = int(note_lens[0][0] / note_length)
+    note_count_track = int(bar_count * note_count_bar)
 
     gen_conf = {'seed_data': seed_data,
                 'seed_pattern': seed_pattern,
                 'scale': scale,
-                'note_count': note_count,
-                'tot_num_notes': int(bar_count * note_count),
-                'note_floor': int(track_number * 12),
-                'track_number': track_number,
                 'bar_count': bar_count,
+                'note_count_bar': note_count_bar,
+                'note_count_track': note_count_track,
+                'note_floor': note_floor,
+                'track_number': track_number,
                 'raw_algo': song_conf['raw_algo'],
                 'destall': song_conf['destall'],
                 'step_size': song_conf['step_size'],
@@ -243,7 +266,7 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_lens, scale):
 
     for bar in range(bar_count):
         c_distance = get_center_distance(bar_count, bar, True)
-        note_index = int(bar * note_count)
+        note_index = int(bar * note_count_bar)
 
         if song_conf['comp_algo'] == 0:
             bar = compose_mandelbrot(gen_conf, note_index, bar, c_distance)
@@ -266,21 +289,27 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_lens, scale):
 
 def compose_song(s_settings, seed_data, scale):
     song = collections.defaultdict(list)
-    bpm = numpy.clip(s_settings['bpm'], 1, 9999)
+    tracks = s_settings['tracks']
+    # [[1, 0], [2, 12], [4, 36], [5, 36], [6, 36]]
 
+    bpm = s_settings['bpm'] if 'bpm' in s_settings.keys() else 120
     note_lens = get_note_durations(bpm, 100)
     single_bar_duration = note_lens[0][0]
-
     bar_count = int((s_settings['song_length'] * 1000) / single_bar_duration)
 
-    for i in range(s_settings['num_tracks']):
+    for i in range(len(tracks)):
+        track_conf = s_settings['tracks'][i]
+        note_length = note_lens[1][str(track_conf[0])]
+        note_floor = track_conf[1]
+
         track = gen_track(s_settings,
                           seed_data,
                           i,
                           bar_count,
-                          note_lens[0],
+                          int(note_length),
+                          note_floor,
                           scale)
 
-        song[i].append(track)
+        song[int(note_length)].append(track)
 
     return song
