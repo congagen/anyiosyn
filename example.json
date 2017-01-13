@@ -1,13 +1,13 @@
 {
-  "artist_name": "A",
-  "song_name": "A",
+  "artist_name": "Name",
+  "song_name": "Name",
 
   "comp_algo": 0,
 
-  "song_length": 10,
+  "song_length": 120,
   "bpm": 120,
 
-  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 48]],
+  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
 
   "mix_tracks": true,
   "raw_algo": true,
