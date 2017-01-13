@@ -52,5 +52,4 @@ def gen_song(json_rqs):
                                       song_conf['sample_rate'],
                                       raw_audio[1])
 
-#gen_song(sys.argv[1])
-gen_song('example.json')
+gen_song(sys.argv[1])
