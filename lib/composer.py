@@ -233,19 +233,12 @@ def compose_prime(gen_conf, note_index, bar, c_distance):
 
 def compose_fibonacci(gen_conf, note_index, bar, c_distance):
     sequence = []
+    seed_num = gen_conf['seed_num']
 
-    seed_list = gen_conf['seed_pattern']
-    note_floor = gen_conf['note_floor'] if (
-        'note_floor' in gen_conf.keys()
-    ) else 0
+
 
     for i in range(gen_conf['note_count_bar']):
-        idx = int(abs(len(seed_list)-1) * c_distance)
-        seed_num = seed_list[idx]
-
-        fibo_num = 1
-
-        sequence.append(note_floor + fibo_num)
+        pass
 
     return sequence
 
@@ -257,9 +250,9 @@ def compose_raw(gen_conf, note_index, bar, c_distance):
         'note_floor' in gen_conf.keys()
     ) else 0
 
-    seed_pattern = gen_conf['seed_pattern'] if (
+    seed_pattern = gen_conf['data_sample'] if (
         'seed_pattern' in gen_conf.keys()
-    ) else [1,2,3,4,5,6,7,8,9,10]
+    ) else [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     destall = gen_conf['destall'] if (
         'destall' in gen_conf.keys()
@@ -283,22 +276,23 @@ def compose_raw(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_floor, scale):
+def gen_track(rqst, track_number, bar_count, note_length, note_floor):
     track = []
 
-    seed_pattern = get_base_pattern(seed_data, 32)
-    note_lens = get_note_durations(song_conf['bpm'], 100)
+    seed_pattern = get_base_pattern(rqst['seed_number'], 32)
+    note_lens = get_note_durations(rqst['bpm'], 100)
     note_count_bar = int(note_lens[0][0] / note_length)
     note_count_track = int(bar_count * note_count_bar)
 
-    step_size = song_conf['step_size'] if ('note_floor' in song_conf.keys()) else 1
-    destall = song_conf['destall'] if ('destall' in song_conf.keys()) else True
-    max_iter = song_conf['max_iter'] if ('max_iter' in song_conf.keys()) else 10
-    raw_algo = song_conf['raw_algo'] if ('raw_algo' in song_conf.keys()) else True
+    step_size = rqst['step_size'] if ('note_floor' in rqst.keys()) else 1
+    destall = rqst['destall'] if ('destall' in rqst.keys()) else True
+    max_iter = rqst['max_iter'] if ('max_iter' in rqst.keys()) else 10
+    raw_algo = rqst['raw_algo'] if ('raw_algo' in rqst.keys()) else True
 
-    gen_conf = {'seed_data': seed_data,
+    gen_conf = {'seed_num': rqst['seed_number'],
+                'data_sample': rqst['data_sample'],
                 'seed_pattern': seed_pattern,
-                'scale': scale,
+                'scale': rqst['scale'],
                 'bar_count': bar_count,
                 'note_count_bar': note_count_bar,
                 'note_count_track': note_count_track,
@@ -313,15 +307,15 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_f
         c_distance = get_center_distance(bar_count, bar, True)
         note_index = int(bar * note_count_bar)
 
-        if song_conf['comp_algo'] == 0:
+        if rqst['comp_algo'] == 0:
             track.append(compose_raw(gen_conf, note_index, bar, c_distance))
-        elif song_conf['comp_algo'] == 1:
+        elif rqst['comp_algo'] == 1:
             track.append(compose_mandelbrot(gen_conf, note_index, bar, c_distance))
-        elif song_conf['comp_algo'] == 2:
+        elif rqst['comp_algo'] == 2:
             track.append(compose_koch(gen_conf, note_index, bar, c_distance))
-        # elif song_conf['comp_algo'] == 3:
+        # elif rqst['comp_algo'] == 3:
         #     track.append(compose_prime(gen_conf, note_index, bar, c_distance))
-        # elif song_conf['comp_algo'] == 4:
+        # elif rqst['comp_algo'] == 4:
         #     track.append(compose_fibonacci(gen_conf, note_index, bar, c_distance))
         else:
             track.append(compose_raw(gen_conf, note_index, bar, c_distance))
@@ -329,28 +323,31 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_f
     return track
 
 
-def compose_song(s_settings, seed_data, scale):
+def compose_song(rqst, seed_number, data_sample, scale):
     song = collections.defaultdict(list)
-    tracks = s_settings['tracks']
-    # [[1, 0], [2, 12], [4, 36], [5, 36], [6, 36]]
+    tracks = rqst['tracks']
 
-    bpm = s_settings['bpm'] if 'bpm' in s_settings.keys() else 120
+    bpm = rqst['bpm'] if 'bpm' in rqst.keys() else 120
     note_lens = get_note_durations(bpm, 100)
     single_bar_duration = note_lens[0][0]
-    bar_count = int((s_settings['comp_length'] * 1000) / single_bar_duration)
+    bar_count = int((rqst['comp_length'] * 1000) / single_bar_duration)
+
+    rqst['bar_count'] = bar_count
+    rqst['single_bar_duration'] = single_bar_duration
+    rqst['seed_number'] = seed_number
+    rqst['data_sample'] = data_sample
+    rqst['scale'] = scale
 
     for i in range(len(tracks)):
-        track_conf = s_settings['tracks'][i]
-        note_length = note_lens[1][str(track_conf[0])]
+        track_conf = rqst['tracks'][i]
+        note_length = int(note_lens[1][str(track_conf[0])])
         note_floor = track_conf[1]
 
-        track = gen_track(s_settings,
-                          seed_data,
+        track = gen_track(rqst,
                           i,
                           bar_count,
-                          int(note_length),
-                          note_floor,
-                          scale)
+                          note_length,
+                          note_floor)
 
         song[int(note_length)].append(track)
 

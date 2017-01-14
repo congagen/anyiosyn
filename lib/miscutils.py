@@ -1,6 +1,7 @@
 import os
 import json
 import wave
+import math
 import numpy
 import random
 import datetime
@@ -189,16 +190,15 @@ def get_data_sample(input_data, data_resolution):
     sp_data = []
 
     r_val = int(len(input_data) * (1 / data_resolution))
-    min_v = 1
     max_v = int(len(input_data) * 0.5)
 
-    step_size = numpy.clip(r_val, min_v, max_v)
+    step_size = numpy.clip(r_val, 1, max_v)
     step_range = abs(int(len(input_data) / step_size) - 1)
 
     idx = 0
 
     for i in range(step_range):
-        idx += step_size
+        idx += step_size if idx < len(input_data) else 0
         val = input_data[idx]
 
         sp_data.append(val)
@@ -255,27 +255,17 @@ def gather_any_data(input_data_path, allowed_ext):
     return data_paths
 
 
-def get_seed_number(num_list):
-    seednum = 0
-
-    for i in range(len(num_list)):
-        if seednum < 1000000000000:
-            seednum += num_list[i]
-
-    return seednum
-
-
 def seed_from_bin_data(input_data_path, seed_resolution):
     seed_number = 0
+    ordinal_data  = []
 
     if len(input_data_path) > 2 and os.path.isfile(input_data_path):
         raw_bin_data = get_bin_data([input_data_path])
         data_sample = get_data_sample(raw_bin_data, seed_resolution)
         ordinal_data = ordinal_filter(data_sample)
-        seed_number = get_seed_number(ordinal_data)
-        return seed_number
-    else:
-        return seed_number
+        seed_number = sum(ordinal_data) if not math.isnan(sum(ordinal_data)) else 1
+
+    return seed_number, ordinal_data
 
 
 def get_composite_seed(seed_int, seed_string, seed_data_path, data_res):
@@ -283,15 +273,22 @@ def get_composite_seed(seed_int, seed_string, seed_data_path, data_res):
     data_num = 0
     max_part_size = int(9223372036854775807 * 0.3)
 
+    ordinal_list = seed_from_bin_data(seed_data_path, data_res)[1]
+
     if len(seed_string) > 0:
         strig_num = numpy.clip(get_full_ordinal(seed_string), 0, max_part_size)
 
     if len(seed_data_path) > 0:
-        data_num = numpy.clip(seed_from_bin_data(seed_data_path, data_res), 0, max_part_size)
+
+        data_num = numpy.clip(seed_from_bin_data(seed_data_path, data_res)[0],
+                              0,
+                              max_part_size)
 
     composite = strig_num + data_num + numpy.clip(seed_int, 0, max_part_size)
 
+    print(composite)
+
     if composite != 0:
-        return int(composite)
+        return abs(int(composite))
     else:
         return random.randint(10000000, 1000000000000)
