@@ -13,8 +13,8 @@
   "destall": true,
   "max_iter": 20,
 
-  "conform_to_scale": false,
-  "scale_to_center_distance": false,
+  "use_seed_data": false,
+  "use_center_distance": false,
 
   "num_channels": 2,
   "use_scale": 1,

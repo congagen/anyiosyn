@@ -235,8 +235,6 @@ def compose_fibonacci(gen_conf, note_index, bar, c_distance):
     sequence = []
 
     seed_list = gen_conf['seed_pattern']
-
-
     note_floor = gen_conf['note_floor'] if (
         'note_floor' in gen_conf.keys()
     ) else 0
