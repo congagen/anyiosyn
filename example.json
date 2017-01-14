@@ -2,7 +2,7 @@
   "filename": "Filename",
 
   "comp_algo": 1,
-  "song_length": 60,
+  "comp_length": 60,
   "bpm": 120,
 
   "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
@@ -13,8 +13,8 @@
   "destall": true,
   "max_iter": 20,
 
-  "scale_to_center_distance": false,
   "conform_to_scale": false,
+  "scale_to_center_distance": false,
 
   "num_channels": 2,
   "use_scale": 1,

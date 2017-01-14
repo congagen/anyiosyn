@@ -321,10 +321,10 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_f
             track.append(compose_mandelbrot(gen_conf, note_index, bar, c_distance))
         elif song_conf['comp_algo'] == 2:
             track.append(compose_koch(gen_conf, note_index, bar, c_distance))
-        elif song_conf['comp_algo'] == 3:
-            track.append(compose_prime(gen_conf, note_index, bar, c_distance))
-        elif song_conf['comp_algo'] == 4:
-            track.append(compose_fibonacci(gen_conf, note_index, bar, c_distance))
+        # elif song_conf['comp_algo'] == 3:
+        #     track.append(compose_prime(gen_conf, note_index, bar, c_distance))
+        # elif song_conf['comp_algo'] == 4:
+        #     track.append(compose_fibonacci(gen_conf, note_index, bar, c_distance))
         else:
             track.append(compose_raw(gen_conf, note_index, bar, c_distance))
 
@@ -339,7 +339,7 @@ def compose_song(s_settings, seed_data, scale):
     bpm = s_settings['bpm'] if 'bpm' in s_settings.keys() else 120
     note_lens = get_note_durations(bpm, 100)
     single_bar_duration = note_lens[0][0]
-    bar_count = int((s_settings['song_length'] * 1000) / single_bar_duration)
+    bar_count = int((s_settings['comp_length'] * 1000) / single_bar_duration)
 
     for i in range(len(tracks)):
         track_conf = s_settings['tracks'][i]
