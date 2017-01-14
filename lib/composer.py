@@ -126,38 +126,41 @@ def iterate_m(z, maxiter):
     return 0
 
 
-def compose_fibo(gen_conf, note_index, bar, c_distance):
-
-    track_l = gen_conf['tot_num_notes'] if 'tot_num_notes' in gen_conf.keys() else 160
-    note_count = gen_conf['note_count'] if 'note_count' in gen_conf.keys() else 16
-    scale = gen_conf['scale'] if 'scale' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10,11,12]
-    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
-    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
-    max_iter = gen_conf['max_iter'] if 'max_iter' in gen_conf.keys() else 50
-    raw_mandel = gen_conf['raw_algo'] if 'raw_algo' in gen_conf.keys() else True
-
-    pass
-
-
 def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
-    mandel_seq = []
+    sequence = []
 
-    note_count_track = gen_conf['note_count_track'] if 'note_count_track' in gen_conf.keys() else 160
-    note_count_bar = gen_conf['note_count_bar'] if 'note_count_bar' in gen_conf.keys() else 16
-    scale = gen_conf['scale'] if 'scale' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10,11,12]
-    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
-    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
-    max_iter = gen_conf['max_iter'] if 'max_iter' in gen_conf.keys() else 50
-    raw_algo = gen_conf['raw_algo'] if 'raw_algo' in gen_conf.keys() else True
+    note_count_track = gen_conf['note_count_track'] if (
+        'note_count_track' in gen_conf.keys()
+    ) else 160
 
-    x_dim = numpy.linspace(-2, 1, note_count_track + note_count_bar)
-    y_dim = numpy.linspace(-1.25, 1.25, note_count_track + note_count_bar)
+    scale = gen_conf['scale'] if (
+        'scale' in gen_conf.keys()
+    ) else [1,2,3,4,5,6,7,8,9,10,11,12]
+
+    note_floor = gen_conf['note_floor'] if (
+        'note_floor' in gen_conf.keys()
+    ) else 0
+
+    destall = gen_conf['destall'] if (
+        'destall' in gen_conf.keys()
+    ) else True
+
+    max_iter = gen_conf['max_iter'] if (
+        'max_iter' in gen_conf.keys()
+    ) else 50
+
+    raw_algo = gen_conf['raw_algo'] if (
+        'raw_algo' in gen_conf.keys()
+    ) else True
+
+    x_dim = numpy.linspace(-2, 1, note_count_track + gen_conf['note_count_bar'])
+    y_dim = numpy.linspace(-1.25, 1.25, note_count_track + gen_conf['note_count_bar'])
 
     iter_sum = 0
     new_note = 0
     prev_note = 0
 
-    for i in range(note_count_bar):
+    for i in range(gen_conf['note_count_bar']):
         xy_pos = note_index + i
 
         x_sin = int(abs(math.sin(xy_pos * 0.1)) * (len(x_dim) * 0.5))
@@ -178,18 +181,25 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
             new_note += 12
 
         prev_note = new_note
-        mandel_seq.append(new_note)
+        sequence.append(new_note)
 
-    return mandel_seq
+    return sequence
 
 
 def compose_koch(gen_conf, note_index, bar, c_distance):
-    koch_seq = []
-    seq_sixth = int(gen_conf['note_count_bar'] / 6)
+    sequence = []
 
-    k_range_a = range(int(seq_sixth * 1), int(seq_sixth * 3))
-    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 5))
-    step_size = gen_conf['step_size'] if 'step_size' in gen_conf.keys() else 3
+    seq_sixth = int(gen_conf['note_count_bar'] / 6)
+    k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
+    k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
+
+    step_size = gen_conf['step_size'] if (
+        'step_size' in gen_conf.keys()
+    ) else 3
+
+    note_floor = gen_conf['note_floor'] if (
+        'note_floor' in gen_conf.keys()
+    ) else 0
 
     step_pos = 0
 
@@ -199,48 +209,80 @@ def compose_koch(gen_conf, note_index, bar, c_distance):
         if i in k_range_a:
             step_pos += step_size
             new_note = raw_val + int(step_pos)
-            koch_seq.append(new_note)
+            sequence.append(note_floor + new_note)
 
         elif i in k_range_b:
             step_pos -= step_size
             new_note = raw_val + int(step_pos)
-            koch_seq.append(abs(new_note))
+            sequence.append(abs(note_floor + new_note))
 
         else:
-            koch_seq.append(abs(raw_val))
-            print(abs(raw_val))
+            sequence.append(abs(note_floor + raw_val))
+
+    return sequence
 
 
-    return koch_seq
+def compose_prime(gen_conf, note_index, bar, c_distance):
+    sequence = []
+
+    for i in range(gen_conf['note_count_bar']):
+        pass
+
+    return sequence
+
+
+def compose_fibonacci(gen_conf, note_index, bar, c_distance):
+    sequence = []
+
+    seed_list = gen_conf['seed_pattern']
+
+
+    note_floor = gen_conf['note_floor'] if (
+        'note_floor' in gen_conf.keys()
+    ) else 0
+
+    for i in range(gen_conf['note_count_bar']):
+        idx = int(abs(len(seed_list)-1) * c_distance)
+        seed_num = seed_list[idx]
+
+        fibo_num = 1
+
+        sequence.append(note_floor + fibo_num)
+
+    return sequence
 
 
 def compose_raw(gen_conf, note_index, bar, c_distance):
-    bar = []
+    sequence = []
 
-    note_count = gen_conf['note_count_bar'] if 'note_count_bar' in gen_conf.keys() else 16
-    note_floor = gen_conf['note_floor'] if 'note_floor' in gen_conf.keys() else 0
-    seed_pattern = gen_conf['seed_pattern'] if 'seed_pattern' in gen_conf.keys() else [1,2,3,4,5,6,7,8,9,10]
-    destall = gen_conf['destall'] if 'destall' in gen_conf.keys() else True
+    note_floor = gen_conf['note_floor'] if (
+        'note_floor' in gen_conf.keys()
+    ) else 0
+
+    seed_pattern = gen_conf['seed_pattern'] if (
+        'seed_pattern' in gen_conf.keys()
+    ) else [1,2,3,4,5,6,7,8,9,10]
+
+    destall = gen_conf['destall'] if (
+        'destall' in gen_conf.keys()
+    ) else True
 
     prv_note = 0
     new_note = 0
 
-    print(seed_pattern)
-
-    for i in range(note_count):
-        idx = int(len(seed_pattern) * c_distance)
+    for i in range(gen_conf['note_count_bar']):
+        idx = int((abs(len(seed_pattern) - 1)) * abs(c_distance))
         data_note = seed_pattern[idx]
         new_note = int(note_floor + data_note)
 
         if new_note == prv_note and destall:
             prv_note = new_note + 12
-            bar.append(new_note + 12)
+            sequence.append(new_note + 12)
         else:
             prv_note = new_note
-            bar.append(new_note)
+            sequence.append(new_note)
 
-
-    return bar
+    return sequence
 
 
 def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_floor, scale):
@@ -251,6 +293,11 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_f
     note_count_bar = int(note_lens[0][0] / note_length)
     note_count_track = int(bar_count * note_count_bar)
 
+    step_size = song_conf['step_size'] if ('note_floor' in song_conf.keys()) else 1
+    destall = song_conf['destall'] if ('destall' in song_conf.keys()) else True
+    max_iter = song_conf['max_iter'] if ('max_iter' in song_conf.keys()) else 10
+    raw_algo = song_conf['raw_algo'] if ('raw_algo' in song_conf.keys()) else True
+
     gen_conf = {'seed_data': seed_data,
                 'seed_pattern': seed_pattern,
                 'scale': scale,
@@ -259,30 +306,27 @@ def gen_track(song_conf, seed_data, track_number, bar_count, note_length, note_f
                 'note_count_track': note_count_track,
                 'note_floor': note_floor,
                 'track_number': track_number,
-                'raw_algo': song_conf['raw_algo'],
-                'destall': song_conf['destall'],
-                'step_size': song_conf['step_size'],
-                'max_iter': song_conf['max_iter']}
+                'raw_algo': raw_algo,
+                'destall': destall,
+                'step_size': step_size,
+                'max_iter': max_iter}
 
     for bar in range(bar_count):
         c_distance = get_center_distance(bar_count, bar, True)
         note_index = int(bar * note_count_bar)
 
         if song_conf['comp_algo'] == 0:
-            bar = compose_mandelbrot(gen_conf, note_index, bar, c_distance)
-            track.append(bar)
-
+            track.append(compose_raw(gen_conf, note_index, bar, c_distance))
         elif song_conf['comp_algo'] == 1:
-            bar = compose_koch(gen_conf, note_index, bar, c_distance)
-            track.append(bar)
-
+            track.append(compose_mandelbrot(gen_conf, note_index, bar, c_distance))
         elif song_conf['comp_algo'] == 2:
-            bar = compose_fibo(gen_conf, note_index, bar, c_distance)
-            track.append(bar)
-
+            track.append(compose_koch(gen_conf, note_index, bar, c_distance))
+        elif song_conf['comp_algo'] == 3:
+            track.append(compose_prime(gen_conf, note_index, bar, c_distance))
+        elif song_conf['comp_algo'] == 4:
+            track.append(compose_fibonacci(gen_conf, note_index, bar, c_distance))
         else:
-            bar = compose_raw(gen_conf, note_index, bar, c_distance)
-            track.append(bar)
+            track.append(compose_raw(gen_conf, note_index, bar, c_distance))
 
     return track
 

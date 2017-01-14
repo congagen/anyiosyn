@@ -1,10 +1,8 @@
 {
-  "artist_name": "Name",
-  "song_name": "Name",
+  "filename": "Filename",
 
-  "comp_algo": 0,
-
-  "song_length": 120,
+  "comp_algo": 1,
+  "song_length": 60,
   "bpm": 120,
 
   "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
@@ -15,6 +13,7 @@
   "destall": true,
   "max_iter": 20,
 
+  "scale_to_center_distance": false,
   "conform_to_scale": false,
 
   "num_channels": 2,

@@ -11,7 +11,6 @@ if sys.version[0] == '3':
 cached_notes = {'NoteValue': array.array('h')}
 # ------------------------------------------------------------------------------
 
-
 def dbg_write(bars, curr_b, note_pitch, note_duration, track_number):
     tr = ' Rendering Track: ' + str(track_number + 1)
     br = ' | Bar: ' + str(curr_b + 1 )

@@ -36,8 +36,25 @@ print("\n")
 center_a = composer.get_center_distance(1000, 500, False)
 center_b = composer.get_center_distance(1000, 500, True)
 
-mandel = composer.compose_mandelbrot(gen_conf, 0, 0, 1)
-#koch = composer.compose_koch(seedlist, center_a, 12, 1)
+mandel = composer.compose_mandelbrot(
+    gen_conf, 0, 0, 1
+)
+
+koch = composer.compose_koch(
+    gen_conf, 0, 0, 1
+)
+
+prim = composer.compose_prime(
+    gen_conf, 0, 0, 1
+)
+
+fibo = composer.compose_fibonacci(
+    gen_conf, 0, 0, 0.5
+)
+
+raw = composer.compose_raw(
+    gen_conf, 0, 0, 1
+)
 
 print("CenterDistance_A: " + str(center_a))
 print("CenterDistance_B: " + str(center_b))
@@ -45,4 +62,6 @@ print("CenterDistance_B: " + str(center_b))
 print("\n")
 print("Seed: " + str(seedlist))
 print("Mdel: " + str(mandel))
-#print("Koch: " + str(koch))
+print("Prim: " + str(prim))
+print("Fibo: " + str(fibo))
+print("Raw: " + str(raw))

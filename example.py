@@ -16,17 +16,14 @@ def gen_song(json_rqs):
                                           song_conf['num_data_samples'])
 
     note_durations = composer.get_note_durations(song_conf['bpm'], 100)
-
     song_dict = composer.compose_song(song_conf, r_seed, scale)
 
-    nms = song_conf['artist_name'], song_conf['song_name']
-    filename = nms[0] + '_-_' + nms[1] + '_(' + miscutils.get_date_name() + ')'
+    filename = song_conf['filename'] + '_(' + miscutils.get_date_name() + ')'
 
     if song_conf['write_json']:
         miscutils.write_json(song_dict,
                              filename,
                              song_conf['output_data_path'])
-
 
     if song_conf['write_audio']:
         au_filename = filename + '.wav'
@@ -52,4 +49,5 @@ def gen_song(json_rqs):
                                       song_conf['sample_rate'],
                                       raw_audio[1])
 
-gen_song(sys.argv[1])
+#gen_song(sys.argv[1])
+gen_song('example.json')
