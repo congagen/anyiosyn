@@ -21,9 +21,9 @@ def gen_song(c_args):
 
 
     seed_number = miscutils.get_composite_seed(request_dct['r_seed_num'],
-                                          request_dct['r_seed_string'],
-                                          request_dct['r_seed_data_path'],
-                                          request_dct['num_data_samples'])
+                                               request_dct['r_seed_string'],
+                                               request_dct['r_seed_data_path'],
+                                               request_dct['num_data_samples'])
 
     data_sample = miscutils.seed_from_bin_data(request_dct['r_seed_data_path'],
                                                1000)

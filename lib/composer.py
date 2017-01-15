@@ -26,7 +26,6 @@ def mix_tracks(song_dct):
             else:
                 mixed_audio_data[f] += frame_val
 
-
     return mixed_audio_data
 
 
@@ -55,42 +54,24 @@ def get_center_distance(total_count, cur_idx, inverted):
     return abs(1 - distance) if inverted else distance
 
 
-def spin_maxmin(note_val, index_val, min_val):
-    sin__val = math.sin(index_val * ((index_val * index_val) * 0.1))
-    spin_val = int(abs(note_val * 0.5) * sin__val)
-
-    return spin_val
-
-
-def arp_pattern_gen(input_note, step_size, max_value, pattern_length, mode):
+def arp_pattern_gen(input_notes, step_size, max_value, pattern_length, mode):
     arp_pattern = []
+    max = int(pattern_length * step_size)
     arp_val = 0
 
     for i in range(len(pattern_length)):
         arp_val += step_size
-        arp_note_val = input_note + arp_val
+        arp_note_val = sum(input_notes) + arp_val if (
+            mode == 1
+        ) else + (max - arp_val)
+
         arp_pattern.append(arp_note_val)
 
     return arp_pattern
 
 
-def get_section_interval(root_interval, iter_count):
-    cur_part = root_interval
-    parts = []
-
-    for i in range(iter_count):
-        cur_part = root_interval * (2**i)
-        parts.append(cur_part)
-
-    return parts
-
-
-def get_step_len(list_data, iter_len):
-    return abs(int(len(list_data) / iter_len))
-
-
-def rotate_pattern(lsit_data, shift_count):
-    return lsit_data[-shift_count % len(lsit_data):] + lsit_data[:-shift_count % len(lsit_data)]
+def rotate_pattern(pattern, shift_count):
+    return pattern[-shift_count % len(pattern):] + pattern[:-shift_count % len(pattern)]
 
 
 def note_to_scale(num_to_match, note_scale):
@@ -234,8 +215,6 @@ def compose_prime(gen_conf, note_index, bar, c_distance):
 def compose_fibonacci(gen_conf, note_index, bar, c_distance):
     sequence = []
     seed_num = gen_conf['seed_num']
-
-
 
     for i in range(gen_conf['note_count_bar']):
         pass

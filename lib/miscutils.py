@@ -286,8 +286,6 @@ def get_composite_seed(seed_int, seed_string, seed_data_path, data_res):
 
     composite = strig_num + data_num + numpy.clip(seed_int, 0, max_part_size)
 
-    print(composite)
-
     if composite != 0:
         return abs(int(composite))
     else:
