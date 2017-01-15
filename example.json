@@ -8,9 +8,7 @@
   "use_scale": true,
   "scale": "CHROMATIC",
 
-  "tracks_": [[16, 24]],
-  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36], [16, 0]],
-
+  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
 
   "raw_algo": true,
   "mix_tracks": true,
@@ -18,7 +16,7 @@
   "destall": true,
   "max_iter": 20,
 
-  "synth": 0,
+  "instrument": 0,
   "harmonics": [128, 32, 8, 4],
 
   "fm_amount": 0,

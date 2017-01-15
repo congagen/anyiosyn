@@ -33,7 +33,6 @@ def fm_osc(curs, op1_note, op2_note, fm_amount, s_rate):
 
 
 def additive_osc(curs, note, harmonics, s_rate):
-
     harmonics_sum = sum(harmonics)
     harmonics_normalized = [h / harmonics_sum for h in harmonics]
 
@@ -109,7 +108,7 @@ def get_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s,
     max_amplitude = 30000
 
     harmonics = validate_dctval(rqst, 'harmonics', 0, [1], True)
-    synt = validate_dctval(rqst, 'synth', 0, 0, False)
+    instrument = validate_dctval(rqst, 'instrument', 0, 0, False)
     fm_amount = validate_dctval(rqst, 'fm_amount', 0, 0, False)
     multi = validate_dctval(rqst, 'fm_multiplier', 1, 1, False)
     twelvetone = validate_dctval(rqst, 'use_twelvetone', 0, True, False)
@@ -121,12 +120,10 @@ def get_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s,
 
     for i in range(num_frames):
         amp_envelope = envelope(i, num_frames, a, s, r)
-        fm_freq_env = envelope(i, num_frames, a, s, r)
         fmn = int(fm_note_value * multi)
 
-        osc_audio_frame = fm_osc(i, current_note, fmn,
-                                 fm_amount, s_rate) if (
-            synt == 0
+        osc_audio_frame = fm_osc(i, current_note, fmn, fm_amount, s_rate) if (
+            instrument == 0
         ) else additive_osc(i, current_note, harmonics, s_rate)
 
         note_amp = 1 / (abs(note_value * (note_value * 0.001)) + 2)
