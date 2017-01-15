@@ -167,7 +167,7 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def compose_koch(gen_conf, note_index, bar, c_distance):
+def compose_koch(gen_conf, note_index, bar_num, c_distance):
     sequence = []
 
     seq_sixth = int(gen_conf['note_count_bar'] / 6)
@@ -203,7 +203,7 @@ def compose_koch(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def compose_prime(gen_conf, note_index, bar, c_distance):
+def compose_prime(gen_conf, note_index, bar_num, c_distance):
     sequence = []
 
     for i in range(gen_conf['note_count_bar']):
@@ -212,7 +212,7 @@ def compose_prime(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def compose_fibonacci(gen_conf, note_index, bar, c_distance):
+def compose_fibonacci(gen_conf, note_index, bar_num, c_distance):
     sequence = []
     seed_num = gen_conf['seed_num']
 
@@ -222,14 +222,14 @@ def compose_fibonacci(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def compose_raw(gen_conf, note_index, bar, c_distance):
+def compose_raw(gen_conf, note_index, bar_num, c_distance):
     sequence = []
 
     note_floor = gen_conf['note_floor'] if (
         'note_floor' in gen_conf.keys()
     ) else 0
 
-    seed_pattern = gen_conf['data_sample'] if (
+    data_sample = gen_conf['data_sample'] if (
         'seed_pattern' in gen_conf.keys()
     ) else [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -241,13 +241,14 @@ def compose_raw(gen_conf, note_index, bar, c_distance):
     new_note = 0
 
     for i in range(gen_conf['note_count_bar']):
-        idx = int((abs(len(seed_pattern) - 1)) * abs(c_distance))
-        data_note = seed_pattern[idx]
+        idx = int((abs(len(data_sample) - 1)) * abs(c_distance))
+        data_note = data_sample[idx]
         new_note = int(note_floor + data_note)
 
         if new_note == prv_note and destall:
-            prv_note = new_note + 12
-            sequence.append(new_note + 12)
+            new_note += 12
+            prv_note = new_note
+            sequence.append(new_note)
         else:
             prv_note = new_note
             sequence.append(new_note)
@@ -255,7 +256,7 @@ def compose_raw(gen_conf, note_index, bar, c_distance):
     return sequence
 
 
-def gen_track(rqst, track_number, bar_count, note_length, note_floor):
+def compose_track(rqst, track_number, bar_count, note_length, note_floor):
     track = []
 
     seed_pattern = get_base_pattern(rqst['seed_number'], 32)
@@ -322,11 +323,11 @@ def compose_song(rqst, seed_number, data_sample, scale):
         note_length = int(note_lens[1][str(track_conf[0])])
         note_floor = track_conf[1]
 
-        track = gen_track(rqst,
-                          i,
-                          bar_count,
-                          note_length,
-                          note_floor)
+        track = compose_track(rqst,
+                              i,
+                              bar_count,
+                              note_length,
+                              note_floor)
 
         song[int(note_length)].append(track)
 

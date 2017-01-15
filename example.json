@@ -8,15 +8,24 @@
   "use_scale": true,
   "scale": "CHROMATIC",
 
+  "tracks_": [[16, 24]],
   "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36], [16, 0]],
 
-  "mix_tracks": true,
+
   "raw_algo": true,
+  "mix_tracks": true,
   "step_size": 3,
   "destall": true,
   "max_iter": 20,
 
-  "use_seed_data": false,
+  "synth": 0,
+  "harmonics": [128, 32, 8, 4],
+
+  "fm_amount": 0,
+  "fm_multiplier": 1,
+
+  "use_twelvetone": true,
+  "use_seed_data": true,
   "use_center_distance": false,
 
   "num_channels": 2,

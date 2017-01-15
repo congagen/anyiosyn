@@ -26,7 +26,7 @@ def gen_song(c_args):
                                                request_dct['num_data_samples'])
 
     data_sample = miscutils.seed_from_bin_data(request_dct['r_seed_data_path'],
-                                               1000)
+                                               10000)
 
     song_dict = composer.compose_song(request_dct, seed_number,
                                       data_sample, scale)

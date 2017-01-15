@@ -20,20 +20,37 @@ def dbg_write(bars, curr_b, note_pitch, note_duration, track_number):
     print(tr + br + no + dr)
 
 
-def fm_osc(curs, op1_note, op2_note, fm_amount, frq_env, s_rate):
+def fm_osc(curs, op1_note, op2_note, fm_amount, s_rate):
     op1_freq = (s_rate * (1 / (abs(op1_note) + 1)))
-    op2_freq = (s_rate * (1 / (abs(op2_note) + 1))) * frq_env
+    op2_freq = (s_rate * (1 / (abs(op2_note) + 1)))
 
     op1_sin = math.sin((math.pi * 2 * (curs % op1_freq)) / op1_freq)
     op2_sin = math.sin((math.pi * 2 * (curs % op2_freq)) / op2_freq)
 
-    composite = op1_sin + ((op1_sin * op2_sin) * fm_amount)
+    composite = op1_sin - ((op1_sin * op2_sin) * fm_amount)
+
+    return composite
+
+
+def additive_osc(curs, note, harmonics, s_rate):
+
+    harmonics_sum = sum(harmonics)
+    harmonics_normalized = [h / harmonics_sum for h in harmonics]
+
+    op1_freq = (s_rate * (1 / (abs(note) + 1)))
+    h_count = len(harmonics_normalized)
+
+    oscs = [math.sin((math.pi * 2 * (curs % op1_freq * i)) / op1_freq * i) *
+            harmonics_normalized[i - 1] for i in range(1, h_count + 1)]
+
+    composite = sum(oscs)
 
     return composite
 
 
 def sin_osc(curs, op1_freq, frq_env, s_rate):
     op1_freq /= 2
+
     cur_frq = int(s_rate / op1_freq) * frq_env
     sine_val = math.sin((math.pi * 2 * (curs % cur_frq)) / cur_frq)
 
@@ -75,14 +92,29 @@ def get_twelve_tone_list(num_octaves):
     return note_list
 
 
-def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s_rate):
+def validate_dctval(dict, key_name, min_val, default_value, check_listsum):
+    val = dict[key_name] if key_name in dict.keys() else default_value
+
+    if check_listsum:
+        return val if sum(val) > min_val else default_value
+    else:
+        return val
+
+
+def get_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s, r, s_rate):
     audio_data = array.array('h')
 
     num_frames = int(((s_rate / 1000) * (note_length * 2)))
     note_freq_list = get_twelve_tone_list(100)
     max_amplitude = 30000
 
-    if twelvetone_note:
+    harmonics = validate_dctval(rqst, 'harmonics', 0, [1], True)
+    synt = validate_dctval(rqst, 'synth', 0, 0, False)
+    fm_amount = validate_dctval(rqst, 'fm_amount', 0, 0, False)
+    multi = validate_dctval(rqst, 'fm_multiplier', 1, 1, False)
+    twelvetone = validate_dctval(rqst, 'use_twelvetone', 0, True, False)
+
+    if twelvetone:
         current_note = note_freq_list[note_value]
     else:
         current_note = note_value * 100
@@ -90,9 +122,12 @@ def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s
     for i in range(num_frames):
         amp_envelope = envelope(i, num_frames, a, s, r)
         fm_freq_env = envelope(i, num_frames, a, s, r)
+        fmn = int(fm_note_value * multi)
 
-        osc_audio_frame = fm_osc(i, current_note, fm_note_value,
-                                 0.01, fm_freq_env, s_rate)
+        osc_audio_frame = fm_osc(i, current_note, fmn,
+                                 fm_amount, s_rate) if (
+            synt == 0
+        ) else additive_osc(i, current_note, harmonics, s_rate)
 
         note_amp = 1 / (abs(note_value * (note_value * 0.001)) + 2)
         note_amp_frame = abs(max_amplitude * note_amp)
@@ -105,7 +140,7 @@ def get_note(twelvetone_note, note_value, fm_note_value, note_length, a, s, r, s
     return audio_data, num_frames
 
 
-def render_track(track_bars, track_dur, sample_rate, note_len, track_num):
+def render_track(track_bars, track_dur, sample_rate, note_len, track_num, rqst):
     track_audio_data = array.array('h')
     num_frames = 0
 
@@ -119,8 +154,15 @@ def render_track(track_bars, track_dur, sample_rate, note_len, track_num):
             if note_key in cached_notes:
                 note_audio_data = cached_notes[note_key]
             else:
-                note_audio_data = get_note(True, b_note, b_note, note_len,
-                                           0.01, 1.0, 0.2, sample_rate)
+                note_audio_data = get_note(rqst,
+                                           True,
+                                           b_note,
+                                           b_note,
+                                           note_len,
+                                           0.01,
+                                           1.0,
+                                           0.2,
+                                           sample_rate)
 
                 cached_notes[note_key] = note_audio_data
 
@@ -132,11 +174,11 @@ def render_track(track_bars, track_dur, sample_rate, note_len, track_num):
     return [track_audio_data, num_frames]
 
 
-def render_tracks(song_dict, song_conf, note_durations):
+def render_tracks(song_dict, rqst, note_durations):
     song_audio_data = collections.defaultdict(list)
     num_frames = 0
 
-    sample_rate = song_conf['sample_rate']
+    sample_rate = rqst['sample_rate']
     count = 0
 
     for k, v in song_dict.items():
@@ -147,7 +189,8 @@ def render_tracks(song_dict, song_conf, note_durations):
                                k,
                                sample_rate,
                                note_len,
-                               count)
+                               count,
+                               rqst)
 
         count += 1
         song_audio_data[k].append(c_track[0])
