@@ -1,2 +1,3 @@
-Example usage:  
-$ python example.py example.json
+Example usage:
+
+$ python example.py example.json 'CHROMATIC'

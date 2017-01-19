@@ -100,9 +100,8 @@ def validate_dctval(dict, key_name, min_val, default_value, check_listsum):
         return val
 
 
-def get_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s, r, s_rate):
+def render_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s, r, s_rate):
     audio_data = array.array('h')
-
     num_frames = int(((s_rate / 1000) * (note_length * 2)))
     note_freq_list = get_twelve_tone_list(100)
     max_amplitude = 30000
@@ -137,7 +136,7 @@ def get_note(rqst, use_twelvetone, note_value, fm_note_value, note_length, a, s,
     return audio_data, num_frames
 
 
-def render_track(track_bars, track_dur, sample_rate, note_len, track_num, rqst):
+def render_track(rqst, track_bars, track_dur, sample_rate, note_len, track_num):
     track_audio_data = array.array('h')
     num_frames = 0
 
@@ -151,15 +150,11 @@ def render_track(track_bars, track_dur, sample_rate, note_len, track_num, rqst):
             if note_key in cached_notes:
                 note_audio_data = cached_notes[note_key]
             else:
-                note_audio_data = get_note(rqst,
-                                           True,
-                                           b_note,
-                                           b_note,
-                                           note_len,
-                                           0.01,
-                                           1.0,
-                                           0.2,
-                                           sample_rate)
+                note_audio_data = render_note(rqst, True,
+                                              b_note, b_note,
+                                              note_len, 0.01,
+                                              1.0, 0.2,
+                                              sample_rate)
 
                 cached_notes[note_key] = note_audio_data
 
@@ -182,12 +177,12 @@ def render_tracks(song_dict, rqst, note_durations):
         itm = song_dict[k]
         note_len = k
 
-        c_track = render_track(itm[0],
+        c_track = render_track(rqst,
+                               itm[0],
                                k,
                                sample_rate,
                                note_len,
-                               count,
-                               rqst)
+                               count)
 
         count += 1
         song_audio_data[k].append(c_track[0])

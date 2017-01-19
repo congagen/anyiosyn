@@ -30,10 +30,11 @@
   "sample_rate": 44100,
 
   "mml_pattern": "E5R1E3R0D3R0E3R0E1R0D1R0-G4R1",
+
   "r_seed_string": "abcedfghi",
   "r_seed_num": 123456789,
-
   "r_seed_data_path": "",
+
   "num_data_samples": 100000,
 
   "write_audio": true,

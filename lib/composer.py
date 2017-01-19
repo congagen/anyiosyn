@@ -110,29 +110,12 @@ def iterate_m(z, maxiter):
 def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
     sequence = []
 
-    note_count_track = gen_conf['note_count_track'] if (
-        'note_count_track' in gen_conf.keys()
-    ) else 160
-
-    scale = gen_conf['scale'] if (
-        'scale' in gen_conf.keys()
-    ) else [1,2,3,4,5,6,7,8,9,10,11,12]
-
-    note_floor = gen_conf['note_floor'] if (
-        'note_floor' in gen_conf.keys()
-    ) else 0
-
-    destall = gen_conf['destall'] if (
-        'destall' in gen_conf.keys()
-    ) else True
-
-    max_iter = gen_conf['max_iter'] if (
-        'max_iter' in gen_conf.keys()
-    ) else 50
-
-    raw_algo = gen_conf['raw_algo'] if (
-        'raw_algo' in gen_conf.keys()
-    ) else True
+    note_count_track = gen_conf['note_count_track'] if ('note_count_track' in gen_conf.keys()) else 0
+    scale = gen_conf['scale'] if ('scale' in gen_conf.keys()) else [1,2,3,4,5,6]
+    note_floor = gen_conf['note_floor'] if ('note_floor' in gen_conf.keys()) else 0
+    destall = gen_conf['destall'] if ('destall' in gen_conf.keys()) else True
+    max_iter = gen_conf['max_iter'] if ('max_iter' in gen_conf.keys()) else 10
+    raw_algo = gen_conf['raw_algo'] if ('raw_algo' in gen_conf.keys()) else True
 
     x_dim = numpy.linspace(-2, 1, note_count_track + gen_conf['note_count_bar'])
     y_dim = numpy.linspace(-1.25, 1.25, note_count_track + gen_conf['note_count_bar'])
@@ -146,7 +129,6 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
 
         x_sin = int(abs(math.sin(xy_pos * 0.1)) * (len(x_dim) * 0.5))
         y_cos = int(abs(math.cos(xy_pos * 0.1)) * (len(y_dim) * 0.5))
-
         c = complex(x_dim[x_sin], y_dim[y_cos])
 
         iter_num = iterate_m(c, max_iter)
@@ -267,12 +249,16 @@ def compose_track(rqst, track_number, bar_count, note_length, note_floor):
     step_size = rqst['step_size'] if ('note_floor' in rqst.keys()) else 1
     destall = rqst['destall'] if ('destall' in rqst.keys()) else True
     max_iter = rqst['max_iter'] if ('max_iter' in rqst.keys()) else 10
+    scale = rqst['scale'] if ('scale' in rqst.keys()) else [1,2,3,4,5,6,7,8,9]
     raw_algo = rqst['raw_algo'] if ('raw_algo' in rqst.keys()) else True
+
+    note_count_track = rqst['note_count_track'] if (
+        'note_count_track' in rqst.keys()
+    ) else 0
 
     gen_conf = {'seed_num': rqst['seed_number'],
                 'data_sample': rqst['data_sample'],
                 'seed_pattern': seed_pattern,
-                'scale': rqst['scale'],
                 'bar_count': bar_count,
                 'note_count_bar': note_count_bar,
                 'note_count_track': note_count_track,
@@ -281,7 +267,8 @@ def compose_track(rqst, track_number, bar_count, note_length, note_floor):
                 'raw_algo': raw_algo,
                 'destall': destall,
                 'step_size': step_size,
-                'max_iter': max_iter}
+                'max_iter': max_iter,
+                'scale': scale}
 
     for bar in range(bar_count):
         c_distance = get_center_distance(bar_count, bar, True)

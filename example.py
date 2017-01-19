@@ -13,11 +13,9 @@ def gen_song(c_args):
 
 
     if len(c_args) >= 3:
-        scale = list(map(lambda x: x + 1, scales[c_args[2]])) if (
-            c_args[2] in scales.keys()
-        ) else list(map(lambda x: x + 1, scales['CHROMATIC']))
-    else:
-        scale = list(map(lambda x: x + 1, scales['CHROMATIC']))
+        scale = scales[c_args[2]] if (
+            c_args[2] in scales.keys()) else scales['CHROMATIC']
+    else: scale = scales['CHROMATIC']
 
 
     seed_number = miscutils.get_composite_seed(request_dct['r_seed_num'],
@@ -55,8 +53,10 @@ def gen_song(c_args):
         else:
             for k in raw_audio[0].keys():
                 audio = raw_audio[0][k][0]
+                track_filename = "0" + str(k) + "_" + au_filename + '.wav'
+
                 miscutils.write_audio(request_dct['output_data_path'],
-                                      str(k) + au_filename,
+                                      track_filename,
                                       audio,
                                       request_dct['num_channels'],
                                       request_dct['sample_rate'],
