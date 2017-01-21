@@ -9,12 +9,12 @@ import collections
 
 
 def json_to_dict(json_request):
-    j_content = {}
+    j_dict = {}
 
     with open(json_request) as json_data:
-        j_content = json.load(json_data)
+        j_dict = json.load(json_data)
 
-    return j_content
+    return j_dict
 
 
 def get_date_name():
@@ -59,36 +59,14 @@ def char_filter(word):
     return out
 
 
+
 def get_ordinal(raw_string):
-    ordinal = 0
-
-    for i in str(raw_string):
-        ordinal += int(ord(i))
-
-    return ordinal
-
-
-def get_full_ordinal(raw_string):
     ordinal = 0
 
     for i in range(len(raw_string)):
         ordinal += int(ord(raw_string[i]))
 
     return ordinal
-
-
-def walk_dir(data_paths):
-    text_data = ''
-    filename = ''
-
-    if len(data_paths) > 0:
-        for i in range(len(data_paths)):
-            text_data = str(format_data(data_paths[i]))
-            filename = str(os.path.splitext(str(data_paths[i]))[0]) + '_0' + str(i) + '_.wav'
-    else:
-        print('No textfiles found in inputdata-path')
-
-    return [text_data, filename]
 
 
 def convert_range(raw_val, raw_min, raw_max, new_min, new_max):
@@ -103,7 +81,7 @@ def scale_data_avg(raw_data, min_data, max_data, min_note, max_note, min_max):
     notes = []
 
     c = collections.Counter(raw_data)
-    most_com = c.most_common(int(len(c) * 0.5))     # Removes duplicates:
+    most_com = c.most_common(int(len(c) * 0.5))
 
     if min_max:
         min_val = min(raw_data)
@@ -152,18 +130,6 @@ def scale_data_raw(raw_data, min_data, max_data, min_note, max_note, range_from_
     return notes
 
 
-def format_data(data_path):
-    data_list = []
-    raw_book = open(data_path).read()
-    raw_string = raw_book.split()
-
-    for w in range(len(raw_string)):
-        if len(str(w)) > 0:
-            data_list.append(char_filter(str(raw_string[w])).lower())
-
-    return data_list
-
-
 def format_filter(file_path, allowed_ext):
     filename, extension = os.path.splitext(str(file_path))
 
@@ -180,7 +146,7 @@ def ordinal_filter(input_data):
         byte_str = str(input_data[b])
 
         if len(byte_str) > 0:
-            orval = get_full_ordinal(byte_str)
+            orval = get_ordinal(byte_str)
             ordinal_data.append(orval)
 
     return ordinal_data
@@ -276,7 +242,7 @@ def get_composite_seed(seed_int, seed_string, seed_data_path, data_res):
     ordinal_list = seed_from_bin_data(seed_data_path, data_res)[1]
 
     if len(seed_string) > 0:
-        strig_num = numpy.clip(get_full_ordinal(seed_string), 0, max_part_size)
+        strig_num = numpy.clip(get_ordinal(seed_string), 0, max_part_size)
 
     if len(seed_data_path) > 0:
 

@@ -96,7 +96,7 @@ def sin_index(item_list, sin_vals):
     return idx
 
 
-def iterate_m(z, maxiter):
+def iterate_f(z, maxiter):
     c = z
     for n in range(maxiter):
         if abs(z) > 2:
@@ -110,15 +110,9 @@ def iterate_m(z, maxiter):
 def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
     sequence = []
 
-    note_count_track = gen_conf['note_count_track'] if ('note_count_track' in gen_conf.keys()) else 0
-    scale = gen_conf['scale'] if ('scale' in gen_conf.keys()) else [1,2,3,4,5,6]
-    note_floor = gen_conf['note_floor'] if ('note_floor' in gen_conf.keys()) else 0
-    destall = gen_conf['destall'] if ('destall' in gen_conf.keys()) else True
-    max_iter = gen_conf['max_iter'] if ('max_iter' in gen_conf.keys()) else 10
-    raw_algo = gen_conf['raw_algo'] if ('raw_algo' in gen_conf.keys()) else True
-
-    x_dim = numpy.linspace(-2, 1, note_count_track + gen_conf['note_count_bar'])
-    y_dim = numpy.linspace(-1.25, 1.25, note_count_track + gen_conf['note_count_bar'])
+    f_resolution = gen_conf['note_count_track'] + gen_conf['note_count_bar']
+    x_dim = numpy.linspace(-2.0, 1.0, f_resolution)
+    y_dim = numpy.linspace(-1.25, 1.25, f_resolution)
 
     iter_sum = 0
     new_note = 0
@@ -131,16 +125,16 @@ def compose_mandelbrot(gen_conf, note_index, bar, c_distance):
         y_cos = int(abs(math.cos(xy_pos * 0.1)) * (len(y_dim) * 0.5))
         c = complex(x_dim[x_sin], y_dim[y_cos])
 
-        iter_num = iterate_m(c, max_iter)
+        iter_num = iterate_f(c, gen_conf['max_iter'])
 
-        if raw_algo:
-            new_note = note_floor + iter_num
+        if gen_conf['raw_algo']:
+            new_note = gen_conf['note_floor'] + iter_num
         else:
             iter_sum += iter_num
-            idx = sin_index(scale, [iter_sum * iter_num * 0.1])
-            new_note = (scale[idx] + note_floor)
+            idx = sin_index(gen_conf['scale'], [iter_sum * iter_num * 0.1])
+            new_note = (gen_conf['scale'][idx] + gen_conf['note_floor'])
 
-        if prev_note == new_note and destall:
+        if prev_note == new_note and gen_conf['destall']:
             new_note += 12
 
         prev_note = new_note
@@ -156,33 +150,26 @@ def compose_koch(gen_conf, note_index, bar_num, c_distance):
     k_range_a = range(int(seq_sixth * 2), int(seq_sixth * 3))
     k_range_b = range(int(seq_sixth * 3), int(seq_sixth * 4))
 
-    step_size = gen_conf['step_size'] if (
-        'step_size' in gen_conf.keys()
-    ) else 3
-
-    note_floor = gen_conf['note_floor'] if (
-        'note_floor' in gen_conf.keys()
-    ) else 0
-
     step_pos = 0
 
     for i in range(gen_conf['note_count_bar']):
         raw_val = 1
 
         if i in k_range_a:
-            step_pos += step_size
+            step_pos += gen_conf['step_size']
             new_note = raw_val + int(step_pos)
-            sequence.append(note_floor + new_note)
+            sequence.append(gen_conf['note_floor'] + new_note)
 
         elif i in k_range_b:
-            step_pos -= step_size
+            step_pos -= gen_conf['step_size']
             new_note = raw_val + int(step_pos)
-            sequence.append(abs(note_floor + new_note))
+            sequence.append(abs(gen_conf['note_floor'] + new_note))
 
         else:
-            sequence.append(abs(note_floor + raw_val))
+            sequence.append(abs(gen_conf['note_floor'] + raw_val))
 
     return sequence
+
 
 
 def compose_prime(gen_conf, note_index, bar_num, c_distance):

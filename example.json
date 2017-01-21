@@ -2,7 +2,9 @@
   "filename": "Filename",
 
   "comp_algo": 1,
-  "comp_length": 10,
+  "raw_algo": true,
+
+  "comp_length": 120,
   "bpm": 120,
 
   "use_scale": true,
@@ -10,11 +12,10 @@
 
   "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
 
-  "raw_algo": true,
   "mix_tracks": true,
   "step_size": 3,
   "destall": true,
-  "max_iter": 20,
+  "max_iter": 100,
 
   "instrument": 0,
   "harmonics": [128, 32, 8, 4],
