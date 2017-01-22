@@ -225,47 +225,18 @@ def compose_raw(gen_conf, note_index, bar_num, c_distance):
     return sequence
 
 
-def compose_track(rqst, track_number, bar_count, note_length, note_floor):
+def compose_track(gen_conf):
     track = []
 
-    seed_pattern = get_base_pattern(rqst['seed_number'], 32)
-    note_lens = get_note_durations(rqst['bpm'], 100)
-    note_count_bar = int(note_lens[0][0] / note_length)
-    note_count_track = int(bar_count * note_count_bar)
+    for bar in range(gen_conf['bar_count']):
+        c_distance = get_center_distance(gen_conf['bar_count'], bar, True)
+        note_index = int(bar * gen_conf['note_count_bar'])
 
-    step_size = rqst['step_size'] if ('note_floor' in rqst.keys()) else 1
-    destall = rqst['destall'] if ('destall' in rqst.keys()) else True
-    max_iter = rqst['max_iter'] if ('max_iter' in rqst.keys()) else 10
-    scale = rqst['scale'] if ('scale' in rqst.keys()) else [1,2,3,4,5,6,7,8,9]
-    raw_algo = rqst['raw_algo'] if ('raw_algo' in rqst.keys()) else True
-
-    note_count_track = rqst['note_count_track'] if (
-        'note_count_track' in rqst.keys()
-    ) else 0
-
-    gen_conf = {'seed_num': rqst['seed_number'],
-                'data_sample': rqst['data_sample'],
-                'seed_pattern': seed_pattern,
-                'bar_count': bar_count,
-                'note_count_bar': note_count_bar,
-                'note_count_track': note_count_track,
-                'note_floor': note_floor,
-                'track_number': track_number,
-                'raw_algo': raw_algo,
-                'destall': destall,
-                'step_size': step_size,
-                'max_iter': max_iter,
-                'scale': scale}
-
-    for bar in range(bar_count):
-        c_distance = get_center_distance(bar_count, bar, True)
-        note_index = int(bar * note_count_bar)
-
-        if rqst['comp_algo'] == 0:
+        if gen_conf['comp_algo'] == 0:
             track.append(compose_raw(gen_conf, note_index, bar, c_distance))
-        elif rqst['comp_algo'] == 1:
+        elif gen_conf['comp_algo'] == 1:
             track.append(compose_mandelbrot(gen_conf, note_index, bar, c_distance))
-        elif rqst['comp_algo'] == 2:
+        elif gen_conf['comp_algo'] == 2:
             track.append(compose_koch(gen_conf, note_index, bar, c_distance))
         # elif rqst['comp_algo'] == 3:
         #     track.append(compose_prime(gen_conf, note_index, bar, c_distance))
@@ -285,23 +256,36 @@ def compose_song(rqst, seed_number, data_sample, scale):
     note_lens = get_note_durations(bpm, 100)
     single_bar_duration = note_lens[0][0]
     bar_count = int((rqst['comp_length'] * 1000) / single_bar_duration)
+    seed_pattern = get_base_pattern(seed_number, 32)
+    note_lens = get_note_durations(rqst['bpm'], 100)
 
-    rqst['bar_count'] = bar_count
-    rqst['single_bar_duration'] = single_bar_duration
-    rqst['seed_number'] = seed_number
-    rqst['data_sample'] = data_sample
-    rqst['scale'] = scale
+    gen_conf = {}
+
+    gen_conf['bar_count'] = bar_count
+    gen_conf['single_bar_duration'] = single_bar_duration
+    gen_conf['data_sample'] = data_sample
+    gen_conf['seed_number'] = seed_number
+    gen_conf['scale'] = rqst['scale']
+    gen_conf['raw_algo'] = rqst['raw_algo']
+    gen_conf['destall'] = rqst['destall']
+    gen_conf['step_size'] = rqst['step_size']
+    gen_conf['max_iter'] = rqst['max_iter']
+    gen_conf['comp_algo'] = rqst['comp_algo']
+
+    gen_conf['seed_pattern'] = seed_pattern
 
     for i in range(len(tracks)):
         track_conf = rqst['tracks'][i]
         note_length = int(note_lens[1][str(track_conf[0])])
         note_floor = track_conf[1]
 
-        track = compose_track(rqst,
-                              i,
-                              bar_count,
-                              note_length,
-                              note_floor)
+        gen_conf['note_count_bar'] = int(note_lens[0][0] / note_length)
+        gen_conf['note_count_track'] = int(bar_count * gen_conf['note_count_bar'])
+        gen_conf['note_floor'] = note_floor
+        gen_conf['track_number'] = i
+        gen_conf['note_lens'] = note_lens
+
+        track = compose_track(gen_conf)
 
         song[int(note_length)].append(track)
 

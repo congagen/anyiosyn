@@ -144,14 +144,13 @@ def render_track(rqst, track_bars, track_dur, sample_rate, note_len, track_num):
         bar_notes = track_bars[i]
 
         for n in range(len(bar_notes)):
-            b_note = bar_notes[n]
-            note_key = str(b_note) + str(note_len)
+            note_key = str(bar_notes[n]) + str(note_len)
 
             if note_key in cached_notes:
                 note_audio_data = cached_notes[note_key]
             else:
                 note_audio_data = render_note(rqst, True,
-                                              b_note, b_note,
+                                              bar_notes[n], bar_notes[n],
                                               note_len, 0.01,
                                               1.0, 0.2,
                                               sample_rate)
@@ -161,20 +160,20 @@ def render_track(rqst, track_bars, track_dur, sample_rate, note_len, track_num):
             track_audio_data += note_audio_data[0]
             num_frames += note_audio_data[1]
 
-            dbg_write(track_bars, i, b_note, note_len, track_num)
+            dbg_write(track_bars, i, bar_notes[n], note_len, track_num)
 
     return [track_audio_data, num_frames]
 
 
-def render_tracks(song_dict, rqst, note_durations):
+def render_tracks(song_comp, rqst, note_durations):
     song_audio_data = collections.defaultdict(list)
     num_frames = 0
 
     sample_rate = rqst['sample_rate']
     count = 0
 
-    for k, v in song_dict.items():
-        itm = song_dict[k]
+    for k, v in song_comp.items():
+        itm = song_comp[k]
         note_len = k
 
         c_track = render_track(rqst,

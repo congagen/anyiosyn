@@ -18,7 +18,7 @@
   "max_iter": 100,
 
   "instrument": 0,
-  "harmonics": [128, 32, 8, 4],
+  "harmonics": [256, 128, 32, 8, 4],
 
   "fm_amount": 0,
   "fm_multiplier": 1,
