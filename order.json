@@ -4,13 +4,20 @@
   "comp_algo": 1,
   "raw_algo": true,
 
-  "comp_length": 120,
+  "comp_length": 240,
   "bpm": 120,
 
   "use_scale": true,
   "scale": "CHROMATIC",
 
-  "tracks": [[1, 0], [2, 12], [4, 24], [8, 36], [16, 36]],
+  "tracks": [
+    [1, 0],
+    [2, 12],
+    [4, 24],
+    [8, 12],
+    [8, 36],
+    [16, 36]
+  ],
 
   "mix_tracks": true,
   "step_size": 3,

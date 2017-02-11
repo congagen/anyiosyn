@@ -171,7 +171,6 @@ def compose_koch(gen_conf, note_index, bar_num, c_distance):
     return sequence
 
 
-
 def compose_prime(gen_conf, note_index, bar_num, c_distance):
     sequence = []
 
@@ -189,6 +188,13 @@ def compose_fibonacci(gen_conf, note_index, bar_num, c_distance):
         pass
 
     return sequence
+
+
+def compose_whitneybox():
+    pass
+
+def compose_sierpinski():
+    pass
 
 
 def compose_raw(gen_conf, note_index, bar_num, c_distance):

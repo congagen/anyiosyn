@@ -59,7 +59,6 @@ def char_filter(word):
     return out
 
 
-
 def get_ordinal(raw_string):
     ordinal = 0
 
