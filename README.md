@@ -1,3 +1,3 @@
 Example usage:
 
-$ python example.py example.json 'CHROMATIC'
+$ python factory_a.py order.json 'CHROMATIC'
