@@ -14,12 +14,11 @@
     [1, 0],
     [2, 12],
     [4, 24],
-    [8, 12],
     [8, 36],
-    [16, 36]
+    [16, 48]
   ],
 
-  "mix_tracks": true,
+  "mix_tracks": false,
   "step_size": 3,
   "destall": true,
   "max_iter": 100,

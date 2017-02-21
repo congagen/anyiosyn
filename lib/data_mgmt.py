@@ -17,9 +17,8 @@ def json_to_dict(json_request):
     return j_dict
 
 
-def get_date_name():
+def get_datetime():
     now = datetime.datetime.now()
-
     date = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
     clock = str(now.hour) + '.' + str(now.minute) + '.' + str(now.second)
 

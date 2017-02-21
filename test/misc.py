@@ -1,4 +1,4 @@
-from lib import composer
+from lib import compose_tools
 from lib import data_mgmt
 
 
@@ -19,7 +19,7 @@ gen_conf = {'seed_data': [1,654,3,87,3,85,987,4,43,98,5,3,76,3,54],
             'step_size': 2,
             'max_iter': 20}
 
-note_lens = composer.get_note_durations(60, 10)
+note_lens = compose_tools.get_note_durations(60, 10)
 
 print("\n")
 print(note_lens[0])
@@ -33,14 +33,14 @@ print(note_lens[1]["16"])
 print(note_lens[1]["32"])
 print("\n")
 
-center_a = composer.get_center_distance(1000, 500, False)
-center_b = composer.get_center_distance(1000, 500, True)
+center_a = compose_tools.get_center_distance(1000, 500, False)
+center_b = compose_tools.get_center_distance(1000, 500, True)
 
-mandel = composer.compose_mandelbrot(
+mandel = compose_tools.compose_mandelbrot(
     gen_conf, 0, 0, 1
 )
 
-koch = composer.compose_koch(
+koch = compose_tools.compose_koch(
     gen_conf, 0, 0, 1
 )
 
