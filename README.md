@@ -1,3 +1,6 @@
-Example usage:
+## Usage:
 
+```sh
 $ python gen.py order.json
+
+```
