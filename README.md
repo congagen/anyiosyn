@@ -1,6 +1,6 @@
 ### Usage:
 
 ```sh
-$ python gen.py order.json
+$ python gen.py examples/song.json
 
 ```

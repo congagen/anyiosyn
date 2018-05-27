@@ -1,63 +1,108 @@
 import sys
-from lib import compose_tools
-from lib import data_mgmt
-from lib import instruments
+import json
+import array
+import collections
+import datetime
+
+from lib.compose import sequences
+from lib.compose import misc
+
+from lib.audio import synthesis
+from lib.audio import rendering
+
+# ---------------------------------------------------------------------------------------------------------
+
+with open('data/scales.json') as data:
+    scales = json.load(data)
+
+# ---------------------------------------------------------------------------------------------------------
+
+def render(song_comp, file_path='audio.wav'):
+    audioframes_comp = []
+    fm_syn = synthesis.Osc(song_comp['meta']['sample_rate'], note_range=10000)
+    note_durations = misc.note_durations(song_comp['meta']['bpm'], 128)
+    note_cache = {}
+    
+    for t in song_comp['tracks']:
+        track_audio_data = array.array('h')
+        print("Rendering: " + str(t))
+
+        note_len = t['note_length']
+        note_floor = t['note_floor']
+        fm_amount = t['fm_amount']
+
+        for n in t['notes']:
+            note_val = note_floor + n
+
+            if note_val in note_cache.keys():
+                note_audio = note_cache[note_val]
+            else:
+                note_audio = fm_syn.render_note(
+                    note_val, note_durations[note_len], fm_amount=fm_amount)
+
+                note_cache[note_val] = note_audio
+            track_audio_data += note_audio
+        audioframes_comp.append(track_audio_data)
+    
+    frame_limit = int((song_comp['meta']['duration'] * 2) * song_comp['meta']['sample_rate'])
+    mixed_frames = rendering.mix_frames(audioframes_comp, frame_limit)
+    rendering.write_audio(file_path, mixed_frames)
+    
+
+def compose(conf):
+    comp = { 'meta': conf, 'tracks': [] }
+
+    note_durations = misc.note_durations(conf['bpm'], 128)
+    max_note_count = int((conf['duration'] * 1000) / note_durations[conf['sequence_resolution']])
+    input_data_path = __file__ if 'input_data_path' not in conf.keys() else conf['input_data_path']
+
+    # root_seq = sequences.mandelbrot_seq(max_note_count)
+    # root_seq = sequences.prime_seq(max_note_count)
+    # root_seq = sequences.fibonacci_seq(max_note_count)
+    # root_seq = sequences.recaman_seq(max_note_count)
+    root_seq = sequences.data_seq(input_data_path, max_note_count)
+
+    for t in conf['tracks']:
+        track_spec = conf['tracks'][t]
+
+        scale = scales['CHROMATIC'] if "scale" not in track_spec.keys() else scales[track_spec['scale']]
+        note_length = 16 if 'note_length' not in track_spec.keys() else track_spec['note_length']
+        note_floor = 12 if 'note_floor' not in track_spec.keys() else track_spec['note_floor']
+        fm_amount = 1 if 'fm_amount' not in track_spec.keys() else track_spec['fm_amount']
+
+        serial_seq = sequences.split_seq(root_seq)
+        seq_sample = misc.sample_sequence(serial_seq[:max_note_count], int(conf['sequence_resolution'] / note_length))
+        scaled_seq = sequences.seq_to_scale(seq_sample, scale, destall=True)
+
+        track = {
+            'note_length': note_length, 'notes': scaled_seq, 
+            'note_floor':note_floor, 'fm_amount':fm_amount
+        }
+
+        comp['tracks'].append(track)
+
+    return comp
 
 
-def gen_song(c_args):
-    request_dct = data_mgmt.json_to_dict(c_args)
+# ---------------------------------------------------------------------------------------------------------
 
-    scales = data_mgmt.json_to_dict('data/scales.json')
-    filename = request_dct['filename'] + '_(' + data_mgmt.get_datetime() + ')'
-    note_durations = compose_tools.get_note_durations(request_dct['bpm'], 100)
+def main(order_path):
+    with open(order_path) as data:
+        conf = json.load(data)
+    
+    comp = compose(conf)
+    file_name = conf['filename'] + '_' + str(datetime.datetime.now())
 
+    if conf['write_comp']:
+        file_path = conf['output_data_path'] + file_name + '.json'
 
-    scale = scales['CHROMATIC'] if "scale" not in request_dct.keys() else scales[request_dct["scale"]]
+        with open(file_path, 'w') as fp:
+            json.dump(comp, fp, sort_keys = True, indent = 4)
 
-
-    seed_number = data_mgmt.get_composite_seed(request_dct['r_seed_num'],
-                                               request_dct['r_seed_string'],
-                                               request_dct['r_seed_data_path'],
-                                               request_dct['num_data_samples'])
-
-    data_sample = data_mgmt.seed_from_bin_data(request_dct['r_seed_data_path'],
-                                               10000)
-
-    song_comp = compose_tools.compose_song(request_dct, seed_number,
-                                           data_sample, scale)
+    if conf['write_audio']:
+        file_path = conf['output_data_path'] + file_name + '.wav'
+        render(comp, file_path)
 
 
-    if request_dct['write_json']:
-        data_mgmt.write_json(song_comp,
-                             filename,
-                             request_dct['output_data_path'])
-
-
-    if request_dct['write_audio']:
-        au_filename = filename + '.wav'
-        raw_audio = instruments.render_tracks(song_comp,
-                                              request_dct,
-                                              note_durations)
-
-        if request_dct['mix_tracks']:
-            mixed_audio = compose_tools.mix_tracks(raw_audio[0])
-            data_mgmt.write_audio(request_dct['output_data_path'],
-                                  au_filename,
-                                  mixed_audio,
-                                  request_dct['num_channels'],
-                                  request_dct['sample_rate'],
-                                  raw_audio[1])
-        else:
-            for k in raw_audio[0].keys():
-                audio = raw_audio[0][k][0]
-                track_filename = "0" + str(k) + "_" + au_filename + '.wav'
-
-                data_mgmt.write_audio(request_dct['output_data_path'],
-                                      track_filename,
-                                      audio,
-                                      request_dct['num_channels'],
-                                      request_dct['sample_rate'],
-                                      raw_audio[1])
-
-                
-gen_song(sys.argv[1])
+if __name__ == '__main__':
+    main(sys.argv[1])

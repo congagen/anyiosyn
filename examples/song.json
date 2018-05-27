@@ -1,0 +1,50 @@
+{
+    "filename": "data_",
+    "output_data_path": "output/",
+    "input_data_path": "gen.py",
+
+    "num_channels": 2,
+    "sample_rate": 44100,
+
+    "duration": 10,
+    "bpm": 120,
+
+    "write_comp": true,
+    "write_audio": true,
+
+    "sequence_resolution": 128,
+
+    "tracks": {
+
+        "track_a": {
+            "note_length": 1,
+            "note_floor": 0,        
+            "scale": "CHROMATIC"
+        },
+
+        "track_b": {
+            "note_length": 2,
+            "note_floor": 12,    
+            "scale": "CHROMATIC"
+        },
+
+        "track_c": {
+            "note_length": 4,
+            "note_floor": 12,
+            "scale": "CHROMATIC"
+        },
+
+        "track_d": {
+            "note_length": 8,
+            "note_floor": 36,
+            "scale": "CHROMATIC"
+        },
+
+        "track_e": {
+            "note_length": 16,
+            "note_floor": 48,
+            "scale": "CHROMATIC"
+        }
+    }
+
+}
