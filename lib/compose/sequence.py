@@ -5,7 +5,7 @@ import statistics
 
 # ----------------------------------------------------------------------------
 
-def seq_to_scale(raw_data, scale, destall=True, note_floor=0):
+def scale_seq(raw_data, scale, destall=True, note_floor=0):
     seq = []
     prev_val = 0
     seq_median = statistics.median(raw_data)
@@ -29,7 +29,7 @@ def split_seq(sequence):
     seq = []
 
     for i in sequence:
-        for n in str(i):
+        for n in str(int(i)):
             seq.append(int(n))
 
     return seq
@@ -39,7 +39,7 @@ def ordinal(sequence):
     seq = []
 
     for i in sequence:
-        for n in str(i):
+        for n in str(int(i)):
             seq.append(ord(str(n)))
 
     return seq

@@ -31,12 +31,6 @@ def format_filter(file_path, allowed_ext):
     return str(extension).lower() in allowed_ext
 
 
-def sample_data(input_data, data_resolution):
-    newlist = input_data[::data_resolution]
-
-    return newlist
-
-
 def list_files(input_data_path, allowed_ext):
     data_paths = []
 

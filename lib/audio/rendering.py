@@ -15,11 +15,11 @@ def write_audio(file_path, audio_data, frame_count=0, num_chan=2, s_rate=44100):
     f.close()
 
 
-def mix_frames(frametracks, frame_limit, max_amp=30000):
+def mix_frames(frametracks, frame_limit, max_amplitude=30000):
     mixed_audio_data = array.array('h')
     track_count = len(frametracks)
 
-    max_amplitude = int(30000 / abs(track_count + 1))
+    max_amplitude = int(max_amplitude / abs(track_count + 1))
 
     for i in range(len(frametracks)):
         frames = frametracks[i][:frame_limit]

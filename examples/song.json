@@ -1,6 +1,6 @@
 {
-    "filename": "data_",
-    "output_data_path": "output/",
+    "filename": "anyiotone_",
+    "output_data_dir": "output/",
     "input_data_path": "gen.py",
 
     "num_channels": 2,
@@ -19,31 +19,31 @@
         "track_a": {
             "note_length": 1,
             "note_floor": 0,        
-            "scale": "CHROMATIC"
+            "scale": "AEOLIAN_MODE"
         },
 
         "track_b": {
             "note_length": 2,
             "note_floor": 12,    
-            "scale": "CHROMATIC"
+            "scale": "AEOLIAN_MODE"
         },
 
         "track_c": {
             "note_length": 4,
             "note_floor": 12,
-            "scale": "CHROMATIC"
+            "scale": "AEOLIAN_MODE"
         },
 
         "track_d": {
             "note_length": 8,
-            "note_floor": 36,
-            "scale": "CHROMATIC"
+            "note_floor": 24,
+            "scale": "AEOLIAN_MODE"
         },
 
         "track_e": {
             "note_length": 16,
-            "note_floor": 48,
-            "scale": "CHROMATIC"
+            "note_floor": 36,
+            "scale": "AEOLIAN_MODE"
         }
     }
 
