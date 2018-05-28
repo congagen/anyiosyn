@@ -1,12 +1,12 @@
 {
     "filename": "anyiotone_",
-    "output_data_dir": "output/",
+    "output_data_dir": "examples/output/",
     "input_data_path": "gen.py",
 
     "num_channels": 2,
     "sample_rate": 44100,
 
-    "duration": 10,
+    "duration": 120,
     "bpm": 120,
 
     "write_comp": true,

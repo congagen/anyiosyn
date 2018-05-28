@@ -57,12 +57,7 @@ def compose(conf):
     input_data_path = __file__ if 'input_data_path' not in conf.keys() else conf['input_data_path']
 
     num_seq = sequence.data_seq(input_data_path, max_note_count)
-    # num_seq = sequence.mandelbrot_seq(max_note_count)
-    # num_seq = sequence.prime_seq(max_note_count)
-    # num_seq = sequence.fibonacci_seq(max_note_count)
-    # num_seq = sequence.recaman_seq(max_note_count)
-    # num_seq = sequence.linear_seq(max_note_count, 256)
-
+    
     for i in conf['tracks']:
         track_spec = conf['tracks'][i]
 
