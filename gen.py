@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 import array
 import collections
@@ -10,16 +11,16 @@ from lib.compose import misc
 from lib.audio import synthesis
 from lib.audio import rendering
 
-# ---------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 with open('data/scales.json') as data:
     scales = json.load(data)
 
-# ---------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 def render(song_comp, file_path='audio.wav'):
     audioframes_comp = []
-    fm_syn = synthesis.Osc(song_comp['meta']['sample_rate'], note_range=10000)
+    instr_a = synthesis.Osc(song_comp['meta']['sample_rate'], note_range=10000)
     note_durations = misc.note_durations(song_comp['meta']['bpm'], 128)
     note_cache = {}
     
@@ -37,10 +38,13 @@ def render(song_comp, file_path='audio.wav'):
             if note_val in note_cache.keys():
                 note_audio = note_cache[note_val]
             else:
-                note_audio = fm_syn.render_note(
-                    note_val, note_durations[note_len], fm_amount=fm_amount)
+                track_amp = 30000 / ((note_floor * 0.2) + 1)
+
+                note_audio = instr_a.render_note(
+                    note_val, note_durations[note_len], fm_amount=fm_amount, max_amp=track_amp)
 
                 note_cache[note_val] = note_audio
+
             track_audio_data += note_audio
         audioframes_comp.append(track_audio_data)
     
@@ -80,24 +84,25 @@ def compose(conf):
 
     return comp
 
+# ----------------------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------------------------------------
-
-def main(order_path):
-    with open(order_path) as data:
-        conf = json.load(data)
+def main(spec_path):
+    with open(spec_path) as data:
+        spec = json.load(data)
     
-    comp = compose(conf)
-    file_name = conf['filename'] + '_' + str(datetime.datetime.now())
+    input_filename = os.path.basename(spec['input_data_path'])
 
-    if conf['write_comp']:
-        file_path = conf['output_data_dir'] + file_name + '.json'
+    comp = compose(spec)
+    file_name = spec['output_filename'] + '_-_' + input_filename + '_' + str(datetime.datetime.now())
+
+    if spec['write_comp']:
+        file_path = spec['output_data_path'] + file_name + '.json'
 
         with open(file_path, 'w') as fp:
             json.dump(comp, fp, sort_keys = True, indent = 4)
 
-    if conf['write_audio']:
-        file_path = conf['output_data_dir'] + file_name + '.wav'
+    if spec['write_audio']:
+        file_path = spec['output_data_path'] + file_name + '.wav'
         render(comp, file_path)
 
 

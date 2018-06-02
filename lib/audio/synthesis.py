@@ -43,7 +43,7 @@ class Osc(object):
         return envelope_value
 
 
-    def render_note(self, note_value, note_length, a=0.1, s=1, r=0.1, fm_multi=2, fm_amount=0, max_amp=30000):
+    def render_note(self, note_value, note_length, a=0.2, s=0.9, r=0.2, fm_multi=2, fm_amount=0, max_amp=30000):
         note_audio_frames = array.array('h')
         num_frames = int(((self.sample_rate / 1000) * (note_length * 2)))
         max_amplitude = max_amp
