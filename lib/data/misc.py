@@ -4,7 +4,6 @@ import sys
 import json
 import wave
 import math
-import numpy
 import random
 import datetime
 import collections

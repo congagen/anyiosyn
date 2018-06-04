@@ -1,6 +1,5 @@
 import math
 import array
-import numpy
 
 
 class Osc(object):
@@ -38,9 +37,9 @@ class Osc(object):
         else:
             current_envelope = 1.0
 
-        envelope_value = numpy.clip([current_envelope], 0.0001, 1.0000)
+        e_val = max(min(current_envelope, 0.9999), 0.0)
 
-        return envelope_value
+        return e_val
 
 
     def render_note(self, note_value, note_length, a=0.2, s=0.9, r=0.2, fm_multi=2, fm_amount=0, max_amp=30000):
