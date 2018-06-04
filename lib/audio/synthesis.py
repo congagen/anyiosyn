@@ -2,7 +2,7 @@ import math
 import array
 
 
-class Osc(object):
+class Synth(object):
     def __init__(self,sample_rate, note_range=10000):
         self.sample_rate = sample_rate
         self.note_freq_list = []
@@ -42,13 +42,13 @@ class Osc(object):
         return e_val
 
 
-    def render_note(self, note_value, note_length, a=0.2, s=0.9, r=0.2, fm_multi=2, fm_amount=0, max_amp=30000):
+    def render_note(self, note_value, note_length, adr=[0.1,1.0,0.1], fm_multi=2, fm_amount=0, max_amp=30000):
         note_audio_frames = array.array('h')
         num_frames = int(((self.sample_rate / 1000) * (note_length * 2)))
         max_amplitude = max_amp
 
         for i in range(num_frames):
-            amp_envelope = self.envelope(i, num_frames, a, s, r)
+            amp_envelope = self.envelope(i, num_frames, adr[0], adr[1], adr[2])
             audio_frame = self.osc(i, note_value, note_value, fm_multi=1, fm_amount=fm_amount)
 
             note_amp = 1 / (abs(note_value * (note_value * 0.001)) + 2)

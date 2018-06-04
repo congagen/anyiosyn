@@ -20,7 +20,7 @@ with open('data/scales.json') as data:
 
 def render(song_comp, file_path='audio.wav'):
     audioframes_comp = []
-    instr_a = synthesis.Osc(song_comp['meta']['sample_rate'], note_range=10000)
+    instr_a = synthesis.Synth(song_comp['meta']['sample_rate'], note_range=10000)
     note_durations = misc.note_durations(song_comp['meta']['bpm'], 128)
     note_cache = {}
     
