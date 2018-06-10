@@ -16,14 +16,6 @@ def write_json(data, filename, output_path, sort=True, indent=4):
         json.dump(data, fp, sort_keys = sort, indent = indent)
 
 
-def write_text(input_data, filename, output_path):
-    
-    file_path = os.path.join(output_path, filename + '.txt')
-    with open(file_path, 'w') as fp:
-        fp.write(input_data)
-        fp.close()
-
-
 def format_filter(file_path, allowed_ext):
     filename, extension = os.path.splitext(str(file_path))
 
