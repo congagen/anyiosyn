@@ -23,7 +23,7 @@ def render(song_comp, file_path='audio.wav'):
     instr_a = synthesis.Synth(song_comp['sample_rate'], note_range=10000)
     note_durations = misc.note_durations(song_comp['bpm'], 128)
     note_cache = {}
-    
+
     for i in song_comp['tracks']:
         track_audio_data = array.array('h')
         print("Rendering: " + str(i))
@@ -41,17 +41,19 @@ def render(song_comp, file_path='audio.wav'):
                 track_amp = 30000 / ((note_floor * 0.2) + 1)
 
                 note_audio = instr_a.render_note(
-                    note_val, note_durations[note_len], fm_amount=fm_amount, max_amp=track_amp)
+                    note_val, note_durations[note_len],
+                    fm_amount=fm_amount, max_amp=track_amp
+                )
 
-                note_cache[note_val] = note_audio
+                note_cache[note_val] = note_audio # array.array('h')
 
             track_audio_data += note_audio
         audioframes_comp.append(track_audio_data)
-    
+
     frame_limit = int((song_comp['duration'] * 2) * song_comp['sample_rate'])
     mixed_frames = rendering.mix_frames(audioframes_comp, frame_limit)
     rendering.write_audio(file_path, mixed_frames)
-    
+
 
 def compose(conf):
     comp = {}
@@ -63,7 +65,7 @@ def compose(conf):
     input_data_path = __file__ if 'input_data_path' not in conf.keys() else conf['input_data_path']
 
     num_seq = sequence.data_seq(input_data_path, max_note_count)
-    
+
     for i in conf['tracks']:
         comp_track = {}
 
@@ -80,7 +82,7 @@ def compose(conf):
 
         comp_track.update(track_spec)
         comp_track['notes'] = seq_scaled
-        
+
         comp['tracks'].append(comp_track)
 
     return comp
@@ -91,7 +93,7 @@ def compose(conf):
 def main(spec_path):
     with open(spec_path) as data:
         spec = json.load(data)
-    
+
     input_filename = os.path.basename(spec['input_data_path'])
 
     comp = compose(spec)

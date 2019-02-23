@@ -1,20 +1,20 @@
 import os
 import array
-import wave 
+import wave
 
 # ----------------------------------------------------------------------------------
 
 def write_audio(file_path, audio_data, frame_count=0, num_chan=2, s_rate=44100):
     n_chan = max(min(num_chan, 1), 2)
     frame_count = len(audio_data) if frame_count == 0 else frame_count
-    
+
     f = wave.open(file_path, 'w')
     f.setparams((n_chan, 2, s_rate, frame_count, "NONE", "Uncompressed"))
-    f.writeframes(audio_data.tostring())
+    f.writeframes(audio_data.tobytes())
     f.close()
 
 
-def mix_frames(frametracks, frame_limit, max_amplitude=30000):
+def mix_frames(frametracks, frame_limit, max_amplitude = 30000):
     mixed_audio_data = array.array('h')
     track_count = len(frametracks)
 
