@@ -1,6 +1,6 @@
 # Anyiosyn
 
-Enigmatic auralizar
+Enigmatic auralizer
 
 </br>
 
