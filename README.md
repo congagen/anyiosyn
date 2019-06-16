@@ -4,7 +4,7 @@ Enigmatic auralizer
 
 </br>
 
-## Examples:
+## Usage:
 - ### gen.py (Composition and rendering):
 
 ```sh

@@ -23,23 +23,28 @@ class Synth(object):
 
         return composite
 
-        
+    
     def envelope(self, cursor, num_frames, a, s, r):
+        
         num_a_frames = int((num_frames * a))
-        num_s_frames = int((num_frames * (abs(s - (a + r) + 1) )))
         num_r_frames = int((num_frames * r))
 
-        if int(cursor) < int(num_a_frames):
-            current_envelope = cursor * (1 / num_a_frames)
-        elif int(cursor) > int(num_a_frames + num_s_frames):
-            dec_val = (1.0 / num_r_frames) * (cursor - (num_a_frames + num_s_frames))
-            current_envelope = 1.0 - dec_val
-        else:
-            current_envelope = 1.0
+        num_s_frames = num_frames - (num_a_frames + num_r_frames)
+        num_s_frames = 0 if num_s_frames < 0 else num_s_frames
 
-        e_val = max(min(current_envelope, 0.9999), 0.0)
+        current_envelope = s
+
+        if int(cursor) < int(num_a_frames):
+            current_envelope = (cursor * (s / num_a_frames)) * s
+
+        if int(cursor) > int(num_a_frames + num_s_frames):
+            c_offset = abs((num_frames - cursor)) + 0.000000001
+            current_envelope = (( c_offset / (num_r_frames) ) ) * s
+
+        e_val = max(min((current_envelope), 0.9999), 0.0)
 
         return e_val
+
 
 
     def render_note(self, note_value, note_length, adr=[0.1,1.0,0.1], fm_multi=2, fm_amount=0, max_amp=30000):
