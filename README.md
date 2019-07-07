@@ -1,6 +1,6 @@
 # Anyiosyn
 
-Enigmatic auralizer
+Auralizing freakzone enhancer
 
 </br>
 
