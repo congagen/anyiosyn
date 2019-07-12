@@ -1,7 +1,5 @@
 # Anyiosyn
 
-</br>
-
 ## Usage:
 - ### gen.py (Composition and rendering):
 
