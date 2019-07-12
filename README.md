@@ -1,7 +1,5 @@
 # Anyiosyn
 
-Auralizing freakzone enhancer
-
 </br>
 
 ## Usage:
