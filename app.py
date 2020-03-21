@@ -7,9 +7,9 @@ import time
 
 from lib.compose import sequence
 from lib.compose import misc
-
 from lib.audio import synthesis
 from lib.audio import rendering
+
 
 # ----------------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ def main(spec_path):
         file_path = spec['output_data_path'] + file_name + '.json'
 
         with open(file_path, 'w') as fp:
-            json.dump(comp, fp, sort_keys = True, indent = 4)
+            json.dump(comp, fp, sort_keys=True, indent=4)
 
     if spec['write_audio']:
         file_path = spec['output_data_path'] + file_name + '.wav'

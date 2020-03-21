@@ -2,7 +2,7 @@
 import os
 import sys
 
-from lib.midi import render
+from midi import render
 
 
 def main(spec_path, output_path):
@@ -12,8 +12,7 @@ def main(spec_path, output_path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        spec_path = sys.argv[1]
-        output_path = sys.argv[2]
+    spec_path = sys.argv[1]
+    output_path = sys.argv[2]
 
-        main(spec_path, output_path)
+    main(spec_path, output_path)

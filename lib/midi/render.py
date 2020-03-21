@@ -61,4 +61,7 @@ def render_midi(spec_path, o_path="", cycle_instr=False):
 
 
 if __name__ == '__main__':
-    render_midi(sys.argv[1], sys.argv[2])
+    spec_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    render_midi(spec_path, output_path)

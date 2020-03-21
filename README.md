@@ -1,18 +1,16 @@
-# Anyiosyn
-
-? ⇨ 🎶
+# Anyiosyn | ? ⇨ 🎶
 
 
-## Usage:
-- ### gen.py (Composition and rendering):
+### Usage:
+- #### gen.py (Composition & rendering):
 
 ```sh
-$ python3 gen.py examples/song_spec.json
+$ python3 app.py examples/song_spec.json
 ```
 
 </br>
 
-- ### midi.py (Comp to midi):
+- #### midi.py (Comp to midi):
 ```sh
-$ python3 midi.py output/Anyiosyn_-_Gen.py_-_1528634383.json output/
+$ python3 lib/spec2mid.py output/Anyiosyn_-_Gen.py.json output/test.mid
 ```
