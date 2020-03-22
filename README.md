@@ -1,9 +1,9 @@
-# Anyiosyn | ? ⇨ 🎶
+# anyiosyn | ? ⇨ 🎶
 
+</br>
 
 ### Usage:
 - #### gen.py (Composition & rendering):
-
 ```sh
 $ python3 app.py examples/song_spec.json
 ```
