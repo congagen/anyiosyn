@@ -1,0 +1,124 @@
+{
+    "output_filename": "Anyiosyn",
+    "output_data_path": "output/",
+    "input_data_path": "app.py",
+
+    "num_channels": 2,
+    "sample_rate": 44100,
+
+    "duration": 240,
+    "bpm": 120,
+
+    "write_comp": true,
+    "write_midi": false,
+    "write_audio": true,
+
+    "sequence_resolution": 512,
+
+    "tracks": {
+
+        "track_a": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 1, "mode_a-z": "a"},
+            "destall": true,
+
+            "note_length": 2,
+            "note_floor": 0,
+
+            "midi_instrument": 5,
+            "midi_volume": 127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "track_a": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 2, "mode_a-z": "a"},
+            "destall": true,
+
+            "note_length": 4,
+            "note_floor": 0,
+
+            "midi_instrument":5,
+            "midi_volume":127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "track_b": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 3, "mode_a-z": "a"},
+            "destall": true,
+
+            "note_length": 8,
+            "note_floor": 0,
+
+            "midi_instrument":5,
+            "midi_volume":127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "track_c": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 5, "mode_a-z": "a"},
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 12,
+
+            "midi_instrument":5,
+            "midi_volume":127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "track_d": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 6, "mode_a-z": "b"},
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 12,
+
+            "midi_instrument":5,
+            "midi_volume":127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "track_e": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "arpeggiate": {"oct": 7, "mode_a-z": "c"},
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 0,
+
+            "midi_instrument":5,
+            "midi_volume":127,
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        }
+
+    }
+
+}

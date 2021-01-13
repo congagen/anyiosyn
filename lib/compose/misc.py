@@ -14,9 +14,3 @@ def note_durations(bpm, num_durs):
         prev_note = dur_val
 
     return dur_dict
-
-
-def sample_sequence(input_data, sample_distance):
-    sample = input_data[::sample_distance]
-
-    return sample

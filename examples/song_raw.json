@@ -6,60 +6,81 @@
     "num_channels": 2,
     "sample_rate": 44100,
 
-    "duration": 30,
+    "duration": 240,
     "bpm": 120,
 
     "write_comp": true,
+    "write_midi": false,
     "write_audio": true,
 
-    "sequence_resolution": 128,
+    "sequence_resolution": 512,
 
     "tracks": {
 
         "track_a": {
-            "note_length": 1,
-            "note_floor": 0,        
-            "midi_instrument":1,
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 4,
+            "note_floor": 0,
+
+            "midi_instrument":5,
             "midi_volume":127,
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
         "track_b": {
-            "note_length": 2,
-            "note_floor": 12,   
-            "midi_instrument":2, 
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 8,
+            "note_floor": 12,
+
+            "midi_instrument":5,
             "midi_volume":127,
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
         "track_c": {
-            "note_length": 4,
-            "note_floor": 12,
-            "midi_instrument":3,
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 24,
+
+            "midi_instrument":5,
             "midi_volume":127,
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
         "track_d": {
-            "note_length": 8,
-            "note_floor": 24,
-            "midi_instrument":4,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
 
-        "track_e": {
+            "destall": true,
+
             "note_length": 16,
-            "note_floor": 36,
+            "note_floor": 24,
+
             "midi_instrument":5,
             "midi_volume":127,
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         }
+
     }
 
 }
