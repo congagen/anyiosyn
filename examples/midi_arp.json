@@ -17,7 +17,7 @@
 
 
     "tracks": {
-        "track_a": {
+        "Arp_A": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -30,11 +30,14 @@
 
             "midi_instrument":5,
             "midi_volume":127,
+            "instr_range": 20,
+            "cycle_instr": false,
+
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
-        "track_b": {
+        "Arp_B": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -47,11 +50,14 @@
 
             "midi_instrument":5,
             "midi_volume":127,
+            "instr_range": 20,
+            "cycle_instr": false,
+
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
-        "track_c": {
+        "Arp_C": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -64,11 +70,14 @@
 
             "midi_instrument":5,
             "midi_volume":127,
+            "instr_range": 20,
+            "cycle_instr": false,
+
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
-        "track_d": {
+        "Arp_D": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -81,40 +90,9 @@
 
             "midi_instrument":5,
             "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
+            "instr_range": 20,
+            "cycle_instr": false,
 
-        "track_e": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
-
-            "arpeggiate": {"oct": 5, "mode_a-z": "e"},
-            "destall": true,
-
-            "note_length": 16,
-            "note_floor": 0,
-
-            "midi_instrument":5,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
-
-        "track_f": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
-
-            "arpeggiate": {"oct": 6, "mode_a-z": "f"},
-            "destall": true,
-
-            "note_length": 16,
-            "note_floor": 0,
-
-            "midi_instrument":5,
-            "midi_volume":127,
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         }

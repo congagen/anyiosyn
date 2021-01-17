@@ -39,6 +39,7 @@ def render_midi(spec_path, o_path="", cycle_instr=False):
     tempo = spec['bpm']
     tracks = spec['tracks']
 
+
     for idx, t in enumerate(tracks):
         nts = [(x + 1) + t['note_floor'] for x in t['notes']]
         midi_track = MIDIFile(1)
@@ -49,20 +50,27 @@ def render_midi(spec_path, o_path="", cycle_instr=False):
         channel = idx
         time = note_dur
         duration = note_dur
+
         volume = 127 if 'midi_volume' not in t.keys() else t['midi_volume']
+        cycle_instr = False if 'cycle_instr' not in t.keys() else t['cycle_instr']
+        instr_range = 1 if 'instr_range' not in t.keys() else t['instr_range']
+
         instrument = 1 if 'midi_instrument' not in t.keys() else t['midi_instrument']
+        instrument = int(instrument-instr_range) if (instrument + instr_range) > 127 else instrument
 
         midi_track.addTempo(track, time, tempo)
 
         for i, pitch in enumerate(track_notes):
-            if cycle_instr:
-                instrument = int(abs(math.sin((1 / (len(track_notes))) * i)) * 127)
+            instrument_add = 0
+            if cycle_instr and instr_range > 0:
+                instrument_add = int(int(abs(math.sin((i * i * math.pi * 0.1) * i)) * instr_range))
 
-            midi_track.addProgramChange(track, channel, time * i, instrument)
+            midi_track.addProgramChange(track, channel, time * i, int(instrument + instrument_add))
             midi_track.addNote(track, channel, pitch, time * i, duration, volume)
 
-        with open(o_path + '_-_Track 0' + str(idx + 1) + ".mid", "wb") as output_file:
+        with open(o_path + "_" + t["track_name"] + ".mid", "wb") as output_file:
             midi_track.writeFile(output_file)
+
 
 def main(spec_path, output_path):
     input_filename = os.path.basename(spec_path)

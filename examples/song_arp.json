@@ -6,7 +6,7 @@
     "num_channels": 2,
     "sample_rate": 44100,
 
-    "duration": 240,
+    "duration": 60,
     "bpm": 120,
 
     "write_comp": true,

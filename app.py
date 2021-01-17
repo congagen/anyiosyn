@@ -18,8 +18,6 @@ with open('data/scales.json') as data:
 
 # ----------------------------------------------------------------------------------------
 
-def test():
-    print("Any!")
 
 def render(song_comp, file_path='audio.wav'):
     audioframes_comp = []
@@ -32,7 +30,7 @@ def render(song_comp, file_path='audio.wav'):
         print("Rendering: " + str(i))
 
         note_len = i['note_length']
-        note_floor = 0 #i['note_floor']
+        note_floor = i['note_floor']
         fm_amount = 0 if 'fm_amount' not in i.keys() else i['fm_amount']
 
         for n in i['notes']:
@@ -74,6 +72,7 @@ def compose(conf):
     for i in conf['tracks']:
         print("Track: " + str(i).capitalize())
         comp_track = {}
+        comp_track["track_name"] = i
 
         track_spec = conf['tracks'][i]
 
@@ -104,6 +103,8 @@ def compose(conf):
 
         if "arpeggiate" in track_spec.keys():
             final = sequence.arp_seq(seq_scaled, track_spec["note_floor"], track_spec["arpeggiate"]["oct"], track_spec["arpeggiate"]["mode_a-z"])
+
+        #final = sequence.arp_seq(seq_scaled, 64, 0)
 
 
         print("Seq Arped: " + str(len(final)) + ": " + str(final))
@@ -149,5 +150,5 @@ if __name__ == '__main__':
     else:
         main("examples/midi_raw.json")
         main("examples/midi_arp.json")
-        #main("examples/song_raw.json")
-        #main("examples/song_arp.json")
+        main("examples/song_raw.json")
+        main("examples/song_arp.json")

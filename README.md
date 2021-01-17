@@ -3,7 +3,7 @@
 </br>
 
 ### Usage:
-- #### Main:
+- #### Examples:
 ```sh
 $ python3 app.py examples/examples/midi_raw.json
 $ python3 app.py examples/examples/midi_arp.json

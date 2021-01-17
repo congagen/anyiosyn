@@ -15,72 +15,9 @@
 
     "sequence_resolution": 512,
 
-  "tracks": {
-        "track_a": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
+    "tracks": {
 
-            "destall": true,
-
-            "note_length": 1,
-            "note_floor": 0,
-
-            "midi_instrument":5,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
-
-        "track_b": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
-
-            "destall": true,
-
-            "note_length": 2,
-            "note_floor": 12,
-
-            "midi_instrument":5,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
-
-        "track_c": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
-
-            "destall": true,
-
-            "note_length": 4,
-            "note_floor": 12,
-
-            "midi_instrument":5,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
-
-        "track_d": {
-            "mirror": 0.75,
-            "comp_mode": 0,
-            "comp_struct": 0,
-
-            "destall": true,
-
-            "note_length": 8,
-            "note_floor": 12,
-
-            "midi_instrument":5,
-            "midi_volume":127,
-            "fm_amount": 0,
-            "scale": "AEOLIAN_MODE"
-        },
-
-        "track_e": {
+        "drums_a": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -90,13 +27,36 @@
             "note_length": 16,
             "note_floor": 36,
 
-            "midi_instrument":5,
             "midi_volume":127,
+            "midi_instrument":113,
+            "instr_range": 7,
+            "cycle_instr": true,
+
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         },
 
-        "track_f": {
+        "drums_b": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 16,
+            "arpeggiate": {"oct": 2, "mode_a-z": "c"},
+            "note_floor": 12,
+
+            "midi_volume": 127,
+            "midi_instrument": 113,
+            "instr_range": 3,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "bass": {
             "mirror": 0.75,
             "comp_mode": 0,
             "comp_struct": 0,
@@ -106,11 +66,111 @@
             "note_length": 16,
             "note_floor": 48,
 
-            "midi_instrument":5,
             "midi_volume":127,
+            "midi_instrument":33,
+            "instr_range": 7,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+       "strings": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 2,
+            "note_floor": 36,
+
+            "midi_instrument":41,
+            "midi_volume":127,
+            "instr_range": 7,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "organ": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 4,
+            "note_floor": 36,
+
+            "midi_instrument":17,
+            "midi_volume":127,
+            "instr_range": 7,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "pipe": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 8,
+            "note_floor": 0,
+            "arpeggiate": {"oct": 5, "mode_a-z": "c"},
+
+            "midi_volume":127,
+            "midi_instrument":73,
+            "instr_range": 7,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "piano": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 12,
+            "arpeggiate": {"oct": 3, "mode_a-z": "a"},
+
+            "midi_volume":127,
+            "midi_instrument":1,
+            "instr_range": 7,
+            "cycle_instr": true,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        },
+
+        "efx": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 4,
+            "note_floor": 36,
+
+            "midi_instrument":121,
+            "midi_volume":127,
+            "instr_range": 6,
+            "cycle_instr": true,
+
             "fm_amount": 0,
             "scale": "AEOLIAN_MODE"
         }
-    }
+  }
 
 }

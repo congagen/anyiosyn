@@ -84,8 +84,7 @@ def struct_seq(seq, note_len, s_mode=0):
                 for note in range(note_len):
                     n_val = seq[bar + note]
                     stru_seq.append(n_val)
-
-    if s_mode == 2:
+    else:
         for bar in range(bar_count):
             for i in range(4):
                 for note in range(note_len):
@@ -152,6 +151,44 @@ def ordinal(sequence):
             seq.append(ord(str(n)))
 
     return seq
+
+
+def wmusic_box(base_seq, size, base_note):
+    notes = {}
+    comp = []
+
+    for i in range(size):
+        notes[i] = {"note": base_note + i, "prev": 0, "x": 0, "y": 0, "z": 0}
+
+    clock = 0
+
+    while len(comp) < len(base_seq):
+        clock += 1
+
+        x_pos = math.sin(clock * 0.1)
+        y_pos = math.cos(clock * 0.1)
+
+        for n in range(len(notes.keys())):
+            notes[n]["x"] += x_pos * n
+            notes[n]["y"] += y_pos * n
+            comp.append(0)
+
+            if notes[n]["x"] < 0 and  notes[n]["prev"] > 0:
+                comp.append(notes[n]["note"])
+
+            notes[n]["prev"] = notes[n]["x"]
+
+    return comp
+
+
+test_seq = []
+
+for i in range(100000):
+    test_seq.append(i)
+
+print(wmusic_box(test_seq, 16, 12))
+
+
 
 # ----------------------------------------------------------------------------
 

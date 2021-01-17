@@ -1,0 +1,39 @@
+{
+    "output_filename": "Anyiosyn",
+    "output_data_path": "output/",
+    "input_data_path": "app.py",
+
+    "num_channels": 2,
+    "sample_rate": 44100,
+
+    "duration": 240,
+    "bpm": 120,
+
+    "write_comp": true,
+    "write_midi": true,
+    "write_audio": false,
+
+    "sequence_resolution": 512,
+
+  "tracks": {
+        "wbox": {
+            "mirror": 0.75,
+            "comp_mode": 0,
+            "comp_struct": 0,
+
+            "destall": true,
+
+            "note_length": 16,
+            "note_floor": 36,
+
+            "midi_volume": 127,
+            "midi_instrument": 73,
+            "instr_range": 7,
+            "cycle_instr": false,
+
+            "fm_amount": 0,
+            "scale": "AEOLIAN_MODE"
+        }
+    }
+
+}
