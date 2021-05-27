@@ -5,10 +5,10 @@
 ### Usage:
 - #### Examples:
 ```sh
-$ python3 app.py examples/examples/midi_raw.json
-$ python3 app.py examples/examples/midi_arp.json
-$ python3 app.py examples/examples/song_raw.json
-$ python3 app.py examples/examples/song_arp.json
+$ python3 app.py examples/midi_raw.json
+$ python3 app.py examples/midi_arp.json
+$ python3 app.py examples/song_raw.json
+$ python3 app.py examples/song_arp.json
 ```
 
 
